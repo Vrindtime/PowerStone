@@ -1,0 +1,54 @@
+name: powerstone
+description: "A Gym Managment App to streamline the admin process"
+publish_to: 'none'
+version: 0.0.1
+
+environment:
+  sdk: '>=3.2.6 <4.0.0'
+
+dependencies:
+  cloud_firestore: ^4.15.3
+  firebase_auth: ^4.17.3
+  firebase_core: ^2.25.3
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.1.0
+  lottie: ^3.0.0
+  popover: ^0.2.9
+  shared_preferences: ^2.2.2
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/images/
+    - assets/lottie/
+
+
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/gym_logo.png"
+  adaptive_icon_foreground: "assets/images/gym_logo.png"
+  adaptive_icon_background: "#000000"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/images/gym_logo_1.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/images/gym_logo_1.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/images/gym_logo_1.png"
