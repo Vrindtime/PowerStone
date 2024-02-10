@@ -38,15 +38,17 @@ class ViewUserList extends StatelessWidget {
                       itemBuilder: (context, index) {
                         //get each individual doc
                         DocumentSnapshot document = userList[index];
-                        String docID =
-                            document.id; //keep track of users
-                        // print("Doc ID: " + docID);
+                        String docID = document.id; //keep track of users
+                        print("Doc ID: " + docID);
     
                         //get userdata from each doc
                         Map<String, dynamic> data =
                             document.data() as Map<String, dynamic>;
                         String userName =
                             data['firstName'] ?? "No Name Recieved";
+
+                         String userImg =
+                            data['image'] ?? "nil";
     
                         // display as a list tile
                         return Container(
@@ -57,9 +59,7 @@ class ViewUserList extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16)),
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(6),
-                            leading: CircleAvatar(
-                              child: Text(docID),
-                            ),
+                            leading: (data.containsKey("image") && userImg!="nil")?ClipOval(child: Image.network(userImg,fit: BoxFit.cover,height: 40,width: 40,),):const CircleAvatar(child: Icon(Icons.person_outline_rounded,size: 40,),),
                             title: Text(
                               userName,
                               style: Theme.of(context)

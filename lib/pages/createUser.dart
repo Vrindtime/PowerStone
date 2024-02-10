@@ -1,8 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/pages/userdetails.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:powerstone/pages/onlineuser.dart';
 import 'package:powerstone/services/firestore.dart';
 
 class CreateUser extends StatefulWidget {
@@ -13,6 +17,8 @@ class CreateUser extends StatefulWidget {
 }
 
 class _CreateUserState extends State<CreateUser> {
+  String imageUrl = "nil";
+
   final TextEditingController fnameController = TextEditingController();
 
   final TextEditingController lnameController = TextEditingController();
@@ -36,6 +42,61 @@ class _CreateUserState extends State<CreateUser> {
   final TextEditingController noteController = TextEditingController();
 
   final FirestoreServices firestoreServices = FirestoreServices();
+
+  String getExtension(XFile file) {
+    final path = file.path;
+    return path.substring(path.lastIndexOf('.') + 1);
+  }
+
+  void selectImage() async {
+    final source = await showModalBottomSheet(
+      context: context,
+      builder: (context) => BottomSheet(
+        onClosing: () {}, // Prevent closing on outside tap
+        builder: (context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.camera),
+              title: Text('Camera'),
+              onTap: () {
+                Navigator.of(context).pop(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_album),
+              title: Text('Gallery'),
+              onTap: () {
+                Navigator.of(context).pop(ImageSource.gallery);
+              },
+            )
+          ],
+        ),
+      ),
+    );
+
+    if (source != null) {
+      final file = await ImagePicker().pickImage(source: source);
+      if (file == null) return;
+      String fileName =
+          '${DateTime.now().microsecondsSinceEpoch}.${getExtension(file)}';
+      //ref to storage root
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      //imgFolder
+      Reference referenceDireImages = referenceRoot.child('userPfp');
+
+      //reference to uplaod img
+      Reference referenceImageToUpload = referenceDireImages.child(fileName);
+      try {
+        await referenceImageToUpload.putFile(File(file.path));
+        imageUrl = await referenceImageToUpload.getDownloadURL();
+      } catch (e) {
+        //later implement a snackbar to show error
+        print("Error in uploading Iamge to DB Storage");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,12 +120,35 @@ class _CreateUserState extends State<CreateUser> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CircleAvatar(
-                  maxRadius: 40,
-                  child: Icon(
-                    Icons.person,
-                    size: 50,
-                  ),
+                //Image Upload
+                Stack(
+                  children: [
+                    CircleAvatar(
+                        maxRadius: 40,
+                        child: (imageUrl == "nil")
+                            ? Icon(
+                                Icons.person,
+                                size: 50,
+                              )
+                            : ClipOval(
+                                child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                height: 50,
+                                width: 50,
+                              ))),
+                    Positioned(
+                      bottom: -10,
+                      left: 40,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.add_a_photo_rounded,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: () => selectImage(),
+                      ),
+                    )
+                  ],
                 ),
                 SizedBox(
                   height: 20,
@@ -254,9 +338,6 @@ class _CreateUserState extends State<CreateUser> {
                   padding: const EdgeInsets.all(16.0),
                   child: GestureDetector(
                     onTap: () async {
-                      setState(() {
-                        // isLoading = true;
-                      });
                       const Duration(seconds: 1);
                       final String firstName = fnameController.text;
                       final String lastName = lnameController.text;
@@ -282,6 +363,7 @@ class _CreateUserState extends State<CreateUser> {
                         email,
                         password,
                         note,
+                        imageUrl,
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -294,7 +376,7 @@ class _CreateUserState extends State<CreateUser> {
                         ),
                       );
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UserDetails()));
+                          builder: (context) => AdminHomePage()));
                     },
                     child: Container(
                       height: 50,

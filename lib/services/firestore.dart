@@ -17,6 +17,7 @@ class FirestoreServices {
     String phone,
     String password,
     String note,
+    String imageUrl
   ) {
     // Convert all string values to lowercase
     firstName = firstName?.toLowerCase() ?? "nil";
@@ -38,6 +39,7 @@ class FirestoreServices {
       'phone': phone,
       'password': password??"nil",
       'note': note,
+      'image':imageUrl??"nil",
     });
   }
 

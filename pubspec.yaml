@@ -1,21 +1,29 @@
 name: powerstone
 description: "A Gym Managment App to streamline the admin process"
 publish_to: 'none'
-version: 0.0.1
+version: 0.0.3
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
 
 dependencies:
+  flutter:
+    sdk: flutter
+
+  #firebase
   cloud_firestore: ^4.15.3
   firebase_auth: ^4.17.3
   firebase_core: ^2.25.3
-  flutter:
-    sdk: flutter
+  firebase_storage: ^11.6.5  # to save the img to db
+
+  #style
+  lottie: ^3.0.0  #for animation
   google_fonts: ^6.1.0
-  lottie: ^3.0.0
-  popover: ^0.2.9
-  shared_preferences: ^2.2.2
+  
+  #util
+  image_picker: ^1.0.7  #select the img from gallery
+  popover: ^0.2.9 #pop up menu
+  shared_preferences: ^2.2.2 #to save data locally(to stay loged in when app closes)
   
 dev_dependencies:
   flutter_test:
@@ -30,6 +38,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/lottie/
+    - shorebird.yaml
 
 
 
