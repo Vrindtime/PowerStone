@@ -8,10 +8,9 @@ class DotMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => showPopover(
+        height: 80.0,
         context: context,
         bodyBuilder: (context) => const MenuItems(),
-        width: 120,
-        height: 78,
         direction: PopoverDirection.left,
         arrowWidth: 10,
         backgroundColor: Theme.of(context).primaryColor
@@ -33,8 +32,9 @@ class MenuItems extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {},
-          child: Container(
+          child: SizedBox(
             height: 30,
+            width: 100,
             child: Center(
                 child: Text('View',
                     style: Theme.of(context).textTheme.labelMedium)),
@@ -42,8 +42,9 @@ class MenuItems extends StatelessWidget {
         ),
         InkWell(
           onTap: () {},
-          child: Container(
+          child: SizedBox(
             height: 30,
+            width: 100,
             child: Center(
                 child: Text('Update',
                     style: Theme.of(context).textTheme.labelMedium)),
@@ -51,8 +52,9 @@ class MenuItems extends StatelessWidget {
         ),
         InkWell(
           onTap: () {},
-          child: Container(
+          child: SizedBox(
             height: 30,
+            width: 100,
             child: Center(
                 child: Text('Delete',
                     style: Theme.of(context).textTheme.labelMedium)),

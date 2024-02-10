@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
 import 'package:powerstone/common/logo.dart';
+import 'package:powerstone/pages/onlineuser.dart';
 import 'package:powerstone/pages/started.dart';
-import 'package:powerstone/pages/userdetails.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
       // ignore: unnecessary_null_comparison
       if (credential != null) {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const UserDetails()));
+            .push(MaterialPageRoute(builder: (context) => const AdminHomePage()));
       } else {}
     } on FirebaseAuthException {
       setState(() {

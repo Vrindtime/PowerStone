@@ -38,7 +38,6 @@ class MainApp extends StatelessWidget {
         ),
       ),
       home: user!=null ? const AdminHomePage() : const StartPage(),
-      // home: const UserDetails(),
     );
   }
 }
