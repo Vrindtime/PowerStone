@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:powerstone/pages/HomePage_toNav.dart';
-import 'package:powerstone/pages/welcome_page.dart';
+import 'package:powerstone/services/auth/auth_gate.dart';
 import 'package:powerstone/services/theme.dart';
-import 'firebase_options.dart';
+import 'services/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +21,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: apptheme,
-      home: user!=null ? const AdminHomePage() : const StartPage(),
+      home: const AuthGate(),
     );
   }
 }

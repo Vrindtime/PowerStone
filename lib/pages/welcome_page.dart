@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:powerstone/common/logo.dart';
-import 'package:powerstone/pages/auth/loginPage.dart';
+import 'package:powerstone/services/auth/loginPage.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});

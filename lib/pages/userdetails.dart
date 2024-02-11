@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:powerstone/common/notification.dart';
 import 'package:powerstone/common/view_user_list.dart';
-import 'package:powerstone/pages/auth/loginPage.dart';
+import 'package:powerstone/services/auth/loginPage.dart';
 import 'package:powerstone/pages/createUser.dart';
 import 'package:powerstone/services/firestore.dart';
 
