@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:powerstone/common/DotMenu.dart';
-import 'package:powerstone/services/firestore.dart';
+import 'package:powerstone/services/user_managment/firestore.dart';
 
 class ViewUserList extends StatelessWidget {
   const ViewUserList({
@@ -38,8 +38,7 @@ class ViewUserList extends StatelessWidget {
                       itemBuilder: (context, index) {
                         //get each individual doc
                         DocumentSnapshot document = userList[index];
-                        String docID = document.id; //keep track of users
-                        print("Doc ID: " + docID);
+                        // String docID = document.id; //keep track of users
 
                         //get userdata from each doc
                         Map<String, dynamic> data =
@@ -57,21 +56,23 @@ class ViewUserList extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16)),
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(6),
-                            leading: (data.containsKey("image") && userImg.isNotEmpty)
+                            leading: (data.containsKey("image") &&
+                                    userImg.isNotEmpty)
                                 ? ClipOval(
                                     child: FadeInImage.assetNetwork(
                                       placeholder:
-                                          'assets/images/img_not_found.jpg', 
+                                          'assets/images/img_not_found.jpg',
                                       image: userImg,
                                       fit: BoxFit.cover,
                                       height: 40,
                                       width: 40,
                                       imageErrorBuilder:
                                           (context, error, stackTrace) {
-                                        return const Icon(
-                                          Icons.error_outline,
-                                          color: Colors.red,
-                                          size: 40,
+                                        return const CircleAvatar(
+                                          child: Icon(
+                                            Icons.person_outline_rounded,
+                                            size: 40,
+                                          ),
                                         );
                                       },
                                     ),

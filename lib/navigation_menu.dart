@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powerstone/pages/chat_page.dart';
 import 'package:powerstone/pages/userdetails.dart';
 
 class NavigationMenu extends StatefulWidget {
@@ -35,7 +36,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
         const UserDetails(),
         const UserDetails(),
         const UserDetails(),
-        const UserDetails(),
+        ChatPage(),
       ][currentPage],
     );
   }

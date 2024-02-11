@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:powerstone/common/notification.dart';
 import 'package:powerstone/common/view_user_list.dart';
-import 'package:powerstone/services/auth/loginPage.dart';
+import 'package:powerstone/pages/loginPage.dart';
 import 'package:powerstone/pages/createUser.dart';
-import 'package:powerstone/services/firestore.dart';
+import 'package:powerstone/services/user_managment/firestore.dart';
 
 class UserDetails extends StatefulWidget {
   const UserDetails({super.key});
@@ -35,7 +35,8 @@ class _UserDetailsState extends State<UserDetails> {
             ViewUserList(
                 firestoreServices: firestoreServices,
                 search: search,
-                searchController: searchController)
+                searchController: searchController,
+            )
           ],
         ),
       ),

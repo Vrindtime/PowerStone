@@ -15,7 +15,6 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   MainApp({super.key});
-  final User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

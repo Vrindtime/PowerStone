@@ -55,9 +55,7 @@ class FirestoreServices {
     if (value != null && value.isNotEmpty) {
       String searchValue =
           value.toLowerCase(); // Convert search value to lowercase
-      String endValue = searchValue.substring(0, searchValue.length - 1) +
-          String.fromCharCode(
-              searchValue.codeUnitAt(searchValue.length - 1) + 1);
+      String endValue = searchValue.substring(0, searchValue.length - 1) +String.fromCharCode(searchValue.codeUnitAt(searchValue.length - 1) + 1);
       userstream = userstream.where('firstName',
           isGreaterThanOrEqualTo: searchValue, isLessThan: endValue);
     }
