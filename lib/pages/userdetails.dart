@@ -32,7 +32,10 @@ class _UserDetailsState extends State<UserDetails> {
               fallbackHeight: 150,
             ),
             const SizedBox(height: 20),
-            ViewUserList(firestoreServices: firestoreServices, search: search, searchController: searchController)
+            ViewUserList(
+                firestoreServices: firestoreServices,
+                search: search,
+                searchController: searchController)
           ],
         ),
       ),
@@ -41,22 +44,22 @@ class _UserDetailsState extends State<UserDetails> {
 
   Row addUserSection(BuildContext context) {
     return Row(
-            children: [
-              Text(
-                "Add Users",
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              IconButton(
-                icon: const Icon(Icons.add_box_rounded),
-                iconSize: 32,
-                color: Theme.of(context).primaryColor,
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => CreateUser()));
-                },
-              )
-            ],
-          );
+      children: [
+        Text(
+          "Add Users",
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        IconButton(
+          icon: const Icon(Icons.add_box_rounded),
+          iconSize: 32,
+          color: Theme.of(context).primaryColor,
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => CreateUser()));
+          },
+        )
+      ],
+    );
   }
 
   AppBar customAppBar(BuildContext context) {
@@ -92,7 +95,8 @@ class _UserDetailsState extends State<UserDetails> {
             color: Theme.of(context).primaryColor,
             iconSize: 36,
             onPressed: () {
-             Navigator.of(context).push(MaterialPageRoute(builder: ((context) => const NotificationWidget())));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: ((context) => const NotificationWidget())));
             },
           ),
         )
@@ -102,33 +106,31 @@ class _UserDetailsState extends State<UserDetails> {
 
   TextField searchTextField(BuildContext context) {
     return TextField(
-            controller: searchController,
-            decoration: InputDecoration(
-              label: const Text("Search"),
-              labelStyle: Theme.of(context).textTheme.labelSmall,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide:
-                      const BorderSide(color: Colors.white, width: 0.5)),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.0),
-                borderSide: BorderSide(
-                  color: Theme.of(context)
-                      .primaryColor, // Border color when focused
-                  width: 0.5,
-                ),
-              ),
-              suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      search = searchController.text;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.search,
-                    color: Theme.of(context).primaryColor,
-                  )),
-            ),
-          );
+      controller: searchController,
+      decoration: InputDecoration(
+        label: const Text("Search"),
+        labelStyle: Theme.of(context).textTheme.labelSmall,
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(6.0),
+            borderSide: const BorderSide(color: Colors.white, width: 0.5)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6.0),
+          borderSide: BorderSide(
+            color: Theme.of(context).primaryColor, // Border color when focused
+            width: 0.5,
+          ),
+        ),
+        suffixIcon: IconButton(
+            onPressed: () {
+              setState(() {
+                search = searchController.text;
+              });
+            },
+            icon: Icon(
+              Icons.search,
+              color: Theme.of(context).primaryColor,
+            )),
+      ),
+    );
   }
 }

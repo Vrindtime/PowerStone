@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:powerstone/pages/onlineuser.dart';
+import 'package:powerstone/pages/HomePage_toNav.dart';
 import 'package:powerstone/services/firestore.dart';
 
 class CreateUser extends StatefulWidget {
@@ -18,6 +18,7 @@ class CreateUser extends StatefulWidget {
 
 class _CreateUserState extends State<CreateUser> {
   String imageUrl = "nil";
+  String? temputl;
 
   final TextEditingController fnameController = TextEditingController();
 
@@ -89,10 +90,23 @@ class _CreateUserState extends State<CreateUser> {
       Reference referenceImageToUpload = referenceDireImages.child(fileName);
       try {
         await referenceImageToUpload.putFile(File(file.path));
-        imageUrl = await referenceImageToUpload.getDownloadURL();
+        temputl = await referenceImageToUpload.getDownloadURL();
+        setState(() {
+          imageUrl = temputl!;
+        });
       } catch (e) {
-        //later implement a snackbar to show error
-        print("Error in uploading Iamge to DB Storage");
+        if (imageUrl.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(
+                  child: Text(
+                'Error in uploading Image to DB Storage',
+                style: Theme.of(context).textTheme.labelMedium,
+              )),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }
@@ -121,35 +135,8 @@ class _CreateUserState extends State<CreateUser> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 //Image Upload
-                Stack(
-                  children: [
-                    CircleAvatar(
-                        maxRadius: 40,
-                        child: (imageUrl == "nil")
-                            ? Icon(
-                                Icons.person,
-                                size: 50,
-                              )
-                            : ClipOval(
-                                child: Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                height: 50,
-                                width: 50,
-                              ))),
-                    Positioned(
-                      bottom: -10,
-                      left: 40,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.add_a_photo_rounded,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        onPressed: () => selectImage(),
-                      ),
-                    )
-                  ],
-                ),
+
+                PfpImageUpload(context),
                 SizedBox(
                   height: 20,
                 ),
@@ -173,60 +160,12 @@ class _CreateUserState extends State<CreateUser> {
                     SizedBox(
                       height: 50,
                       width: 175,
-                      child: DropdownMenu(
-                        controller: genderController,
-                        label: Text(
-                          "Gender",
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                        width: 175,
-                        enableFilter: true,
-                        textStyle: Theme.of(context).textTheme.labelSmall,
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry(
-                              value: Text(
-                                "male",
-                                style: Theme.of(context).textTheme.labelSmall,
-                              ),
-                              label: "Male"),
-                          DropdownMenuEntry(
-                              value: Text(
-                                "female",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              label: "Female"),
-                          DropdownMenuEntry(
-                              value: Text("other"), label: "Other"),
-                        ],
-                      ),
+                      child: genderDrowdown(context),
                     ),
                     SizedBox(
                       height: 50,
                       width: 175,
-                      child: TextField(
-                        onTap: () {
-                          _selectDate(context);
-                        },
-                        keyboardType: TextInputType.datetime,
-                        controller: dobController,
-                        style: Theme.of(context).textTheme.labelMedium,
-                        decoration: InputDecoration(
-                          label: const Text("D.O.B"),
-                          labelStyle: Theme.of(context).textTheme.labelSmall,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(6.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.white, width: 0.5)),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
-                              color: Theme.of(context)
-                                  .primaryColor, // Border color when focused
-                              width: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
+                      child: selectDOB(context),
                     ),
                   ],
                 ),
@@ -237,66 +176,12 @@ class _CreateUserState extends State<CreateUser> {
                     SizedBox(
                       height: 50,
                       width: 175,
-                      child: DropdownMenu(
-                        textStyle: TextStyle(fontSize: 16.0),
-                        controller: bloodController,
-                        label: Text(
-                          "Blood Group",
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                        width: 175,
-                        enableFilter: true,
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry(value: Text("A+"), label: "A+"),
-                          DropdownMenuEntry(value: Text("A-"), label: "A-"),
-                          DropdownMenuEntry(value: Text("B+"), label: "B+"),
-                          DropdownMenuEntry(value: Text("B-"), label: "B-"),
-                          DropdownMenuEntry(value: Text("AB+"), label: "AB+"),
-                          DropdownMenuEntry(value: Text("AB-"), label: "AB-"),
-                          DropdownMenuEntry(value: Text("O+"), label: "O+"),
-                          DropdownMenuEntry(value: Text("O-"), label: "O-"),
-                        ],
-                      ),
+                      child: bloodgroupDropDown(context),
                     ),
                     SizedBox(
                       height: 50,
                       width: 175,
-                      child: DropdownMenu(
-                        controller: jobController,
-                        label: Text(
-                          "Profession",
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                        width: 175,
-                        enableFilter: true,
-                        textStyle: Theme.of(context).textTheme.labelSmall,
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry(
-                              value: Text("Software Engineer"),
-                              label: "Software Engineer"),
-                          DropdownMenuEntry(
-                              value: Text("Web Developer"),
-                              label: "Web Developer"),
-                          DropdownMenuEntry(
-                              value: Text("Data Scientist"),
-                              label: "Data Scientist"),
-                          DropdownMenuEntry(
-                              value: Text("UX/UI Designer"),
-                              label: "UX/UI Designer"),
-                          DropdownMenuEntry(
-                              value: Text("Network Engineer"),
-                              label: "Network Engineer"),
-                          DropdownMenuEntry(
-                              value: Text("Cybersecurity Analyst"),
-                              label: "Cybersecurity Analyst"),
-                          DropdownMenuEntry(
-                              value: Text("Cloud Architect"),
-                              label: "Cloud Architect"),
-                          DropdownMenuEntry(
-                              value: Text("Database Administrator"),
-                              label: "Database Administrator"),
-                        ],
-                      ),
+                      child: jobDropdown(context),
                     ),
                   ],
                 ),
@@ -336,63 +221,7 @@ class _CreateUserState extends State<CreateUser> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      const Duration(seconds: 1);
-                      final String firstName = fnameController.text;
-                      final String lastName = lnameController.text;
-                      final String dateOfBirth = dobController.text;
-                      final String gender = genderController.text;
-                      final String job = jobController.text;
-                      final String bloodGroup = bloodController.text;
-                      final String height = heightController.text;
-                      final String weight = weightController.text;
-                      final String email = phoneController.text;
-                      final String password = passwordController.text;
-                      final String note = noteController.text;
-
-                      await firestoreServices.addUser(
-                        firstName,
-                        lastName,
-                        dateOfBirth,
-                        gender,
-                        job,
-                        bloodGroup,
-                        height,
-                        weight,
-                        email,
-                        password,
-                        note,
-                        imageUrl,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Center(
-                              child: Text(
-                            'Success',
-                            style: Theme.of(context).textTheme.labelMedium,
-                          )),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AdminHomePage()));
-                    },
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Add User",
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: createUserbtn(context),
                 ),
               ],
             ),
@@ -400,6 +229,208 @@ class _CreateUserState extends State<CreateUser> {
         ),
       ),
     );
+  }
+
+  GestureDetector createUserbtn(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        const Duration(seconds: 1);
+        final String firstName = fnameController.text;
+        final String lastName = lnameController.text;
+        final String dateOfBirth = dobController.text;
+        final String gender = genderController.text;
+        final String job = jobController.text;
+        final String bloodGroup = bloodController.text;
+        final String height = heightController.text;
+        final String weight = weightController.text;
+        final String email = phoneController.text;
+        final String password = passwordController.text;
+        final String note = noteController.text;
+
+        await firestoreServices.addUser(
+          firstName,
+          lastName,
+          dateOfBirth,
+          gender,
+          job,
+          bloodGroup,
+          height,
+          weight,
+          email,
+          password,
+          note,
+          imageUrl,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(
+                child: Text(
+              'Success',
+              style: Theme.of(context).textTheme.labelMedium,
+            )),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => AdminHomePage()));
+      },
+      child: Container(
+        height: 50,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: Text(
+            "Create User",
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+        ),
+      ),
+    );
+  }
+
+  DropdownMenu<Text> jobDropdown(BuildContext context) {
+    return DropdownMenu(
+      controller: jobController,
+      label: Text(
+        "Profession",
+        style: Theme.of(context).textTheme.labelSmall,
+      ),
+      width: 175,
+      enableFilter: true,
+      textStyle: Theme.of(context).textTheme.labelSmall,
+      dropdownMenuEntries: [
+        DropdownMenuEntry(
+            value: Text("Software Engineer"), label: "Software Engineer"),
+        DropdownMenuEntry(value: Text("Web Developer"), label: "Web Developer"),
+        DropdownMenuEntry(
+            value: Text("Data Scientist"), label: "Data Scientist"),
+        DropdownMenuEntry(
+            value: Text("UX/UI Designer"), label: "UX/UI Designer"),
+        DropdownMenuEntry(
+            value: Text("Network Engineer"), label: "Network Engineer"),
+        DropdownMenuEntry(
+            value: Text("Cybersecurity Analyst"),
+            label: "Cybersecurity Analyst"),
+        DropdownMenuEntry(
+            value: Text("Cloud Architect"), label: "Cloud Architect"),
+        DropdownMenuEntry(
+            value: Text("Database Administrator"),
+            label: "Database Administrator"),
+      ],
+    );
+  }
+
+  DropdownMenu<Text> bloodgroupDropDown(BuildContext context) {
+    return DropdownMenu(
+      textStyle: TextStyle(fontSize: 16.0),
+      controller: bloodController,
+      label: Text(
+        "Blood Group",
+        style: Theme.of(context).textTheme.labelSmall,
+      ),
+      width: 175,
+      enableFilter: true,
+      dropdownMenuEntries: [
+        DropdownMenuEntry(value: Text("A+"), label: "A+"),
+        DropdownMenuEntry(value: Text("A-"), label: "A-"),
+        DropdownMenuEntry(value: Text("B+"), label: "B+"),
+        DropdownMenuEntry(value: Text("B-"), label: "B-"),
+        DropdownMenuEntry(value: Text("AB+"), label: "AB+"),
+        DropdownMenuEntry(value: Text("AB-"), label: "AB-"),
+        DropdownMenuEntry(value: Text("O+"), label: "O+"),
+        DropdownMenuEntry(value: Text("O-"), label: "O-"),
+      ],
+    );
+  }
+
+  TextField selectDOB(BuildContext context) {
+    return TextField(
+      onTap: () {
+        _selectDate(context);
+      },
+      keyboardType: TextInputType.datetime,
+      controller: dobController,
+      style: Theme.of(context).textTheme.labelMedium,
+      decoration: InputDecoration(
+        label: const Text("D.O.B"),
+        labelStyle: Theme.of(context).textTheme.labelSmall,
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(6.0),
+            borderSide: const BorderSide(color: Colors.white, width: 0.5)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6.0),
+          borderSide: BorderSide(
+            color: Theme.of(context).primaryColor, // Border color when focused
+            width: 0.5,
+          ),
+        ),
+      ),
+    );
+  }
+
+  DropdownMenu<Text> genderDrowdown(BuildContext context) {
+    return DropdownMenu(
+      controller: genderController,
+      label: Text(
+        "Gender",
+        style: Theme.of(context).textTheme.labelSmall,
+      ),
+      width: 175,
+      enableFilter: true,
+      textStyle: Theme.of(context).textTheme.labelSmall,
+      dropdownMenuEntries: [
+        DropdownMenuEntry(
+            value: Text(
+              "male",
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+            label: "Male"),
+        DropdownMenuEntry(
+            value: Text(
+              "female",
+              style: TextStyle(fontSize: 12),
+            ),
+            label: "Female"),
+        DropdownMenuEntry(value: Text("other"), label: "Other"),
+      ],
+    );
+  }
+
+  Widget PfpImageUpload(BuildContext context) {
+    return StatefulBuilder(builder: (context, setState) {
+      return Stack(
+        children: [
+          CircleAvatar(
+              maxRadius: 40,
+              child: (imageUrl == "nil")
+                  ? Icon(
+                      Icons.person,
+                      size: 50,
+                    )
+                  : ClipOval(
+                      child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      height: 50,
+                      width: 50,
+                    ))),
+          Positioned(
+            bottom: -10,
+            left: 40,
+            child: IconButton(
+              icon: Icon(
+                Icons.add_a_photo_rounded,
+                color: Theme.of(context).primaryColor,
+              ),
+              onPressed: () => selectImage(),
+            ),
+          )
+        ],
+      );
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {

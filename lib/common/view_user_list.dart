@@ -40,31 +40,51 @@ class ViewUserList extends StatelessWidget {
                         DocumentSnapshot document = userList[index];
                         String docID = document.id; //keep track of users
                         print("Doc ID: " + docID);
-    
+
                         //get userdata from each doc
                         Map<String, dynamic> data =
                             document.data() as Map<String, dynamic>;
                         String userName =
                             data['firstName'] ?? "No Name Recieved";
 
-                         String userImg =
-                            data['image'] ?? "nil";
-    
+                        String userImg = data['image'] ?? "nil";
+
                         // display as a list tile
                         return Container(
-                          margin:
-                              const EdgeInsets.symmetric(vertical: 10),
+                          margin: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                               color: Theme.of(context).splashColor,
                               borderRadius: BorderRadius.circular(16)),
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(6),
-                            leading: (data.containsKey("image") && userImg!="nil")?ClipOval(child: Image.network(userImg,fit: BoxFit.cover,height: 40,width: 40,),):const CircleAvatar(child: Icon(Icons.person_outline_rounded,size: 40,),),
+                            leading: (data.containsKey("image") && userImg.isNotEmpty)
+                                ? ClipOval(
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder:
+                                          'assets/images/img_not_found.jpg', 
+                                      image: userImg,
+                                      fit: BoxFit.cover,
+                                      height: 40,
+                                      width: 40,
+                                      imageErrorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Icon(
+                                          Icons.error_outline,
+                                          color: Colors.red,
+                                          size: 40,
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : const CircleAvatar(
+                                    child: Icon(
+                                      Icons.person_outline_rounded,
+                                      size: 40,
+                                    ),
+                                  ),
                             title: Text(
                               userName,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium,
+                              style: Theme.of(context).textTheme.labelMedium,
                             ),
                             trailing: const DotMenu(),
                           ),
