@@ -325,12 +325,10 @@ class _CreateUserState extends State<CreateUser> {
         child: SizedBox(
           child: DropdownButton2(
             isExpanded:  true,
-            hint: Flexible(
-              child: Text(
-                "Job",
-                style: Theme.of(context).textTheme.labelSmall,
-                overflow: TextOverflow.clip,
-              ),
+            hint: Text(
+              "Job",
+              style: Theme.of(context).textTheme.labelSmall,
+              overflow: TextOverflow.clip,
             ),
             value: selectjob,
             buttonStyleData: ButtonStyleData(
