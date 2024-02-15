@@ -63,7 +63,7 @@ class ChatRoom extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
             //display all messages
@@ -80,7 +80,6 @@ class ChatRoom extends StatelessWidget {
   }
 
   Widget _buildMessageList() {
-    String senderID = _auth.currentUser!.uid;
     return StreamBuilder(
         stream: _chatService.getMessages(reciverID),
         builder: (context, snapshot) {

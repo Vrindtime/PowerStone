@@ -20,26 +20,26 @@ class FirestoreServices {
     String imageUrl
   ) {
     // Convert all string values to lowercase
-    firstName = firstName?.toLowerCase() ?? "nil";
-    lastName = lastName?.toLowerCase() ?? "nil";
-    gender = gender?.toLowerCase() ?? "nil";
-    job = job?.toLowerCase() ?? "nil";
-    note = note?.toLowerCase() ?? "nil";
+    firstName = firstName.toLowerCase();
+    lastName = lastName.toLowerCase();
+    gender = gender.toLowerCase();
+    job = job.toLowerCase();
+    note = note.toLowerCase();
 
     // Add the user to Firestore
     return _userCollection.add({
       'firstName': firstName,
       'lastName': lastName,
-      'dateOfBirth': dateOfBirth ?? "nil",
+      'dateOfBirth': dateOfBirth,
       'gender': gender,
       'job': job,
-      'bloodGroup': bloodGroup??"nil",
-      'height': height ?? "nil",
-      'weight': weight ?? "nil",
+      'bloodGroup': bloodGroup,
+      'height': height,
+      'weight': weight,
       'phone': phone,
-      'password': password??"nil",
+      'password': password,
       'note': note,
-      'image':imageUrl??"nil",
+      'image':imageUrl,
     });
   }
 
@@ -52,7 +52,7 @@ class FirestoreServices {
   //READ
   Stream<QuerySnapshot> getUserDetails(String value) {
     Query userstream = _userCollection.orderBy('firstName', descending: false);
-    if (value != null && value.isNotEmpty) {
+    if (value.isNotEmpty) {
       String searchValue =
           value.toLowerCase(); // Convert search value to lowercase
       String endValue = searchValue.substring(0, searchValue.length - 1) +String.fromCharCode(searchValue.codeUnitAt(searchValue.length - 1) + 1);

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/DotMenu.dart';
+import 'package:powerstone/common/dot_menu.dart';
 import 'package:powerstone/services/user_managment/firestore.dart';
 
 class ViewUserList extends StatelessWidget {

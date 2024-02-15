@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
 import 'package:powerstone/common/logo.dart';
-import 'package:powerstone/pages/HomePage_toNav.dart';
+import 'package:powerstone/pages/nav_home_page.dart';
 import 'package:powerstone/pages/welcome_page.dart';
 
 class LoginPage extends StatefulWidget {

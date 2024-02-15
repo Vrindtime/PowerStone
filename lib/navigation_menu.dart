@@ -36,7 +36,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
         const UserDetails(),
         const UserDetails(),
         const UserDetails(),
-        ChatPage(),
+        const ChatPage(),
       ][currentPage],
     );
   }

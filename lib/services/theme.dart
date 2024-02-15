@@ -26,6 +26,6 @@ ThemeData apptheme = ThemeData(
       fontWeight: FontWeight.w400,
       color: Colors.white,
     ),
-    titleMedium: TextStyle(fontSize: 12), // later on specific elements
+    titleMedium: const TextStyle(fontSize: 12), // later on specific elements
   ),
 );

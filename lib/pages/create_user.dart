@@ -6,8 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:powerstone/pages/HomePage_toNav.dart';
+import 'package:powerstone/pages/nav_home_page.dart';
 import 'package:powerstone/services/user_managment/firestore.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class CreateUser extends StatefulWidget {
   const CreateUser({super.key});
@@ -111,6 +112,31 @@ class _CreateUserState extends State<CreateUser> {
     }
   }
 
+  String? selectedBloodGroup;
+  List<String> bloodGroups = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-',
+  ];
+
+  String? selectjob;
+  List<String> jobs = [
+    "Software Engineer",
+    "Web Developer",
+    "Data Scientist",
+    "UX/UI Designer",
+    "Network Engineer",
+    "Cloud Architect",
+  ];
+
+  String? selectgender;
+  List<String> genders = ["Male", "Fema", "Other"];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,54 +159,54 @@ class _CreateUserState extends State<CreateUser> {
             width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 //Image Upload
-
-                PfpImageUpload(context),
+                pfpImageUpload(context),
                 SizedBox(
                   height: 20,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     InputText(
                       controller: fnameController,
-                      label: "First name",
+                      label: "First Name",
                     ),
                     InputText(
                       controller: lnameController,
-                      label: "Last name",
+                      label: "Last Name",
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     SizedBox(
                       height: 50,
-                      width: 175,
+                      width: MediaQuery.of(context).size.width * 0.45,
                       child: genderDrowdown(context),
                     ),
                     SizedBox(
                       height: 50,
-                      width: 175,
+                      width: MediaQuery.of(context).size.width * 0.45,
                       child: selectDOB(context),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     SizedBox(
                       height: 50,
-                      width: 175,
-                      child: bloodgroupDropDown(context),
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      child: bloodgroupDDB(context),
                     ),
                     SizedBox(
                       height: 50,
-                      width: 175,
+                      width: MediaQuery.of(context).size.width * 0.45,
                       child: jobDropdown(context),
                     ),
                   ],
@@ -189,7 +215,7 @@ class _CreateUserState extends State<CreateUser> {
                   height: 20,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     InputText(
                       controller: heightController,
@@ -219,6 +245,7 @@ class _CreateUserState extends State<CreateUser> {
                 SizedBox(
                   height: 20,
                 ),
+                //login btn
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: createUserbtn(context),
@@ -231,6 +258,7 @@ class _CreateUserState extends State<CreateUser> {
     );
   }
 
+  //login btn
   GestureDetector createUserbtn(BuildContext context) {
     return GestureDetector(
       onTap: () async {
@@ -291,58 +319,102 @@ class _CreateUserState extends State<CreateUser> {
     );
   }
 
-  DropdownMenu<Text> jobDropdown(BuildContext context) {
-    return DropdownMenu(
-      controller: jobController,
-      label: Text(
-        "Profession",
-        style: Theme.of(context).textTheme.labelSmall,
+  DropdownButtonHideUnderline jobDropdown(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: Flexible(
+        child: SizedBox(
+          child: DropdownButton2(
+            isExpanded:  true,
+            hint: Flexible(
+              child: Text(
+                "Job",
+                style: Theme.of(context).textTheme.labelSmall,
+                overflow: TextOverflow.clip,
+              ),
+            ),
+            value: selectjob,
+            buttonStyleData: ButtonStyleData(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: Colors.white, width: 0.3),
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
+              elevation: 0,
+            ),
+            onChanged: (String? value) {
+              setState(() {
+                selectjob = value;
+              });
+            },
+            items: jobs
+                .map((String item) => DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(
+                        item,
+                        style: Theme.of(context).textTheme.labelMedium,
+                        overflow: TextOverflow.clip,
+                      ),
+                    ))
+                .toList(),
+            dropdownStyleData: DropdownStyleData(
+              maxHeight: MediaQuery.of(context).size.width * 0.8,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              offset: const Offset(-10, 0),
+              scrollbarTheme: ScrollbarThemeData(
+                radius: const Radius.circular(40),
+                thickness: MaterialStateProperty.all(3),
+                thumbVisibility: MaterialStateProperty.all(true),
+              ),
+            ),
+          ),
+        ),
       ),
-      width: 175,
-      enableFilter: true,
-      textStyle: Theme.of(context).textTheme.labelSmall,
-      dropdownMenuEntries: [
-        DropdownMenuEntry(
-            value: Text("Software Engineer"), label: "Software Engineer"),
-        DropdownMenuEntry(value: Text("Web Developer"), label: "Web Developer"),
-        DropdownMenuEntry(
-            value: Text("Data Scientist"), label: "Data Scientist"),
-        DropdownMenuEntry(
-            value: Text("UX/UI Designer"), label: "UX/UI Designer"),
-        DropdownMenuEntry(
-            value: Text("Network Engineer"), label: "Network Engineer"),
-        DropdownMenuEntry(
-            value: Text("Cybersecurity Analyst"),
-            label: "Cybersecurity Analyst"),
-        DropdownMenuEntry(
-            value: Text("Cloud Architect"), label: "Cloud Architect"),
-        DropdownMenuEntry(
-            value: Text("Database Administrator"),
-            label: "Database Administrator"),
-      ],
     );
   }
 
-  DropdownMenu<Text> bloodgroupDropDown(BuildContext context) {
-    return DropdownMenu(
-      textStyle: TextStyle(fontSize: 16.0),
-      controller: bloodController,
-      label: Text(
-        "Blood Group",
-        style: Theme.of(context).textTheme.labelSmall,
+  DropdownButtonHideUnderline bloodgroupDDB(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        hint:
+            Text("Blood Group", style: Theme.of(context).textTheme.labelSmall),
+        value: selectedBloodGroup,
+        buttonStyleData: ButtonStyleData(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.white, width: 0.2),
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+          elevation: 0,
+        ),
+        onChanged: (String? value) {
+          setState(() {
+            selectedBloodGroup = value;
+          });
+        },
+        items: bloodGroups
+            .map((String item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    item,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                ))
+            .toList(),
+        dropdownStyleData: DropdownStyleData(
+          maxHeight: MediaQuery.of(context).size.width * 0.8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          offset: const Offset(-20, 0),
+          scrollbarTheme: ScrollbarThemeData(
+            radius: const Radius.circular(40),
+            thickness: MaterialStateProperty.all(3),
+            thumbVisibility: MaterialStateProperty.all(true),
+          ),
+        ),
       ),
-      width: 175,
-      enableFilter: true,
-      dropdownMenuEntries: [
-        DropdownMenuEntry(value: Text("A+"), label: "A+"),
-        DropdownMenuEntry(value: Text("A-"), label: "A-"),
-        DropdownMenuEntry(value: Text("B+"), label: "B+"),
-        DropdownMenuEntry(value: Text("B-"), label: "B-"),
-        DropdownMenuEntry(value: Text("AB+"), label: "AB+"),
-        DropdownMenuEntry(value: Text("AB-"), label: "AB-"),
-        DropdownMenuEntry(value: Text("O+"), label: "O+"),
-        DropdownMenuEntry(value: Text("O-"), label: "O-"),
-      ],
     );
   }
 
@@ -371,35 +443,42 @@ class _CreateUserState extends State<CreateUser> {
     );
   }
 
-  DropdownMenu<Text> genderDrowdown(BuildContext context) {
-    return DropdownMenu(
-      controller: genderController,
-      label: Text(
-        "Gender",
-        style: Theme.of(context).textTheme.labelSmall,
+  DropdownButtonHideUnderline genderDrowdown(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        isExpanded: false,
+        hint: Text(
+          "Gender",
+          style: Theme.of(context).textTheme.labelSmall,
+        ),
+        value: selectgender,
+        buttonStyleData: ButtonStyleData(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.white, width: 0.3),
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+          elevation: 0,
+        ),
+        onChanged: (String? value) {
+          setState(() {
+            selectgender = value;
+          });
+        },
+        items: genders
+            .map((String item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    item,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                ))
+            .toList(),
       ),
-      width: 175,
-      enableFilter: true,
-      textStyle: Theme.of(context).textTheme.labelSmall,
-      dropdownMenuEntries: [
-        DropdownMenuEntry(
-            value: Text(
-              "male",
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-            label: "Male"),
-        DropdownMenuEntry(
-            value: Text(
-              "female",
-              style: TextStyle(fontSize: 12),
-            ),
-            label: "Female"),
-        DropdownMenuEntry(value: Text("other"), label: "Other"),
-      ],
     );
   }
 
-  Widget PfpImageUpload(BuildContext context) {
+  Widget pfpImageUpload(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
       return Stack(
         children: [
@@ -463,7 +542,7 @@ class InputText extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 50,
-      width: 175,
+      width: MediaQuery.of(context).size.width * 0.45,
       child: TextField(
         keyboardType: (label == 'Height' || label == 'Weight')
             ? TextInputType.number

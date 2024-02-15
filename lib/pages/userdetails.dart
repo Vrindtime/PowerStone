@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:powerstone/common/notification.dart';
 import 'package:powerstone/common/view_user_list.dart';
 import 'package:powerstone/pages/loginPage.dart';
-import 'package:powerstone/pages/createUser.dart';
+import 'package:powerstone/pages/create_user.dart';
 import 'package:powerstone/services/user_managment/firestore.dart';
 
 class UserDetails extends StatefulWidget {
@@ -56,7 +56,7 @@ class _UserDetailsState extends State<UserDetails> {
           color: Theme.of(context).primaryColor,
           onPressed: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => CreateUser()));
+                .push(MaterialPageRoute(builder: (context) => const CreateUser()));
           },
         )
       ],
