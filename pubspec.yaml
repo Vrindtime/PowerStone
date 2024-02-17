@@ -26,6 +26,7 @@ dependencies:
   shared_preferences: ^2.2.2 #to save data locally(to stay loged in when app closes)
   dropdown_button2: ^2.3.9
   animations: ^2.0.11
+  intl: ^0.19.0
   
 dev_dependencies:
   flutter_test:

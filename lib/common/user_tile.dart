@@ -17,7 +17,7 @@ class UserTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(16)),
         child: ListTile(
           contentPadding: const EdgeInsets.all(6),
-          leading: (image.isNotEmpty && image !="nil")
+          leading: (image !="nil")
               ? ClipOval(
                   child: FadeInImage.assetNetwork(
                     placeholder: 'assets/images/img_not_found.jpg',

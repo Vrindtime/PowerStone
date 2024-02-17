@@ -38,7 +38,7 @@ class ChatService {
         .doc(chatRoomID)
         .collection("messages")
         .orderBy("timestamp",
-            descending: false,
+            descending: true,
         ) // Sort by timestamp in descending order
         .snapshots();
   }

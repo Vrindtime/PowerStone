@@ -18,7 +18,7 @@ class CreateUser extends StatefulWidget {
 }
 
 class _CreateUserState extends State<CreateUser> {
-  String imageUrl = "nil";
+  String? imageUrl;
   String? temputl;
 
   final TextEditingController fnameController = TextEditingController();
@@ -96,7 +96,7 @@ class _CreateUserState extends State<CreateUser> {
           imageUrl = temputl!;
         });
       } catch (e) {
-        if (imageUrl.isEmpty) {
+        if (imageUrl!.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Center(
@@ -287,7 +287,7 @@ class _CreateUserState extends State<CreateUser> {
           email,
           password,
           note,
-          imageUrl,
+          imageUrl!,
         );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -489,7 +489,7 @@ class _CreateUserState extends State<CreateUser> {
                     )
                   : ClipOval(
                       child: Image.network(
-                      imageUrl,
+                      imageUrl!,
                       fit: BoxFit.cover,
                       height: 50,
                       width: 50,

@@ -3,75 +3,75 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:powerstone/common/chat_bubble.dart';
 import 'package:powerstone/services/chat/chat_services.dart';
+import 'package:intl/intl.dart';
 
-class ChatRoom extends StatelessWidget {
+class ChatRoom extends StatefulWidget {
   final String img;
   final String username;
   final String reciverID;
+
+  const ChatRoom({
+    super.key,
+    required this.username,
+    required this.reciverID,
+    required this.img,
+  });
+
+  @override
+  State<ChatRoom> createState() => _ChatRoomState();
+}
+
+class _ChatRoomState extends State<ChatRoom> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  ChatRoom(
-      {super.key,
-      required this.username,
-      required this.reciverID,
-      required this.img});
+
   final TextEditingController _messageController = TextEditingController();
+
   final ChatService _chatService = ChatService();
+
+  final scrollController = ScrollController();
+
+  final focusNode = FocusNode();
 
   void sendMessage() async {
     // if there is something inside the textfield
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(reciverID, _messageController.text);
+      await _chatService.sendMessage(widget.reciverID, _messageController.text);
     }
     _messageController.clear();
+    // Move the scroll position to the bottom
+    scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  String _getTime(Timestamp time) {
+    // Convert Timestamp to DateTime
+    DateTime dateTime = time.toDate();
+
+    // Format the DateTime object
+    String formattedTime = DateFormat.jm().format(dateTime); // "5:30 PM"
+
+    return formattedTime;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            (img.isNotEmpty || img != "nil")
-                ? ClipOval(
-                    child: FadeInImage.assetNetwork(
-                      placeholder: 'assets/images/img_not_found.jpg',
-                      image: img,
-                      fit: BoxFit.cover,
-                      height: 40,
-                      width: 40,
-                      imageErrorBuilder: (context, error, stackTrace) {
-                        return const CircleAvatar(
-                          child: Icon(
-                            Icons.person_outline_rounded,
-                            size: 40,
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                : const CircleAvatar(
-                    child: Icon(
-                      Icons.person_outline_rounded,
-                      size: 40,
-                    ),
-                  ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(username),
-          ],
-        ),
-      ),
+      resizeToAvoidBottomInset: true,
+      appBar: appbar(),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             //display all messages
-            Expanded(
-              child: _buildMessageList(),
+            Expanded(child: SingleChildScrollView(child: _buildMessageList())),
+            const SizedBox(
+              height: 5,
             ),
-
-            //display user input
             _buildUserInput(context),
           ],
         ),
@@ -79,37 +79,100 @@ class ChatRoom extends StatelessWidget {
     );
   }
 
+  AppBar appbar() {
+    return AppBar(
+      title: Row(
+        children: [
+          (widget.img != "nil")
+              ? ClipOval(
+                  child: FadeInImage.assetNetwork(
+                    placeholder: 'assets/images/img_not_found.jpg',
+                    image: widget.img,
+                    fit: BoxFit.cover,
+                    height: 40,
+                    width: 40,
+                    imageErrorBuilder: (context, error, stackTrace) {
+                      return const CircleAvatar(
+                        child: Icon(
+                          Icons.person_outline_rounded,
+                          size: 40,
+                        ),
+                      );
+                    },
+                  ),
+                )
+              : const CircleAvatar(
+                  child: Icon(
+                    Icons.person_outline_rounded,
+                    size: 40,
+                  ),
+                ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(widget.username),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMessageList() {
     return StreamBuilder(
-        stream: _chatService.getMessages(reciverID),
+        stream: _chatService.getMessages(widget.reciverID),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text("Error");
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
-          return ListView(
-            children: snapshot.data!.docs
-                .map((doc) => _buildMessageItem(doc))
-                .toList(),
+          return Align(
+            alignment: Alignment.topCenter,
+            child: _messageList(snapshot),
           );
         });
   }
 
-  Widget _buildMessageItem(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  ListView _messageList(AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
+    return ListView.separated(
+      controller: scrollController,
+      shrinkWrap: true,
+      reverse: true, // Maintain reverse order
+      separatorBuilder: (context, index) => const SizedBox.shrink(),
+      itemCount: snapshot.data!.docs.length,
+      itemBuilder: (context, index) {
+        DocumentSnapshot doc = snapshot.data!.docs[index];
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        //is current user
+        bool isCurrentUser = data['senderName'] == _auth.currentUser!.uid;
 
-    //is current user
-    bool isCurrentUser = data['senderName'] == _auth.currentUser!.uid;
-
-    //align msg to right when sender is current user or vice versa
-    var alignment =
-        isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
-    String message = data["message"];
-    return Container(
-      alignment: alignment,
-      child: ChatBubble(message: message, isCurrentUser: isCurrentUser),
+        //align msg to right when sender is current user or vice versa
+        var alignment =
+            isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
+        String message = data["message"];
+        Timestamp time = data["timestamp"];
+        _getTime(time);
+        return Column(
+          children: [
+            Container(
+              alignment:
+                  isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+              child: ChatBubble(
+                message: message,
+                isCurrentUser: isCurrentUser,
+                time: _getTime(time),
+              ),
+            ),
+            Container(
+              alignment: alignment,
+              child: Text(
+                _getTime(time),
+                style: const TextStyle(fontSize: 12),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -119,6 +182,7 @@ class ChatRoom extends StatelessWidget {
       children: [
         Expanded(
           child: TextField(
+            focusNode: focusNode,
             controller: _messageController,
             style: Theme.of(context).textTheme.labelMedium,
             decoration: InputDecoration(
@@ -131,20 +195,25 @@ class ChatRoom extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
-                  color: Theme.of(context)
-                      .primaryColor, // Border color when focused
+                  color: Theme.of(context).primaryColor, // Border color when focused
                   width: 0.5,
                 ),
               ),
             ),
           ),
         ),
-        IconButton(
-            onPressed: sendMessage,
-            icon: Icon(
-              Icons.send,
-              color: Theme.of(context).primaryColor,
-            ))
+        const SizedBox(
+          width: 8,
+        ),
+        CircleAvatar(
+          radius: 22,
+          child: IconButton(
+              onPressed: sendMessage,
+              icon: Icon(
+                Icons.send,
+                color: Theme.of(context).primaryColor,
+              )),
+        )
       ],
     );
   }
