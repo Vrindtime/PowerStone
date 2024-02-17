@@ -51,7 +51,7 @@ class _ChatRoomState extends State<ChatRoom> {
     DateTime dateTime = time.toDate();
 
     // Format the DateTime object
-    String formattedTime = DateFormat.jm().format(dateTime); // "5:30 PM"
+    String formattedTime = DateFormat.jm().format(dateTime); // "0:00 PM/AM"
 
     return formattedTime;
   }
@@ -59,21 +59,27 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      // resizeToAvoidBottomInset: true,
       appBar: appbar(),
       body: Padding(
         padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            //display all messages
-            Expanded(child: SingleChildScrollView(child: _buildMessageList())),
-            const SizedBox(
-              height: 5,
-            ),
-            _buildUserInput(context),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              //display all messages
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.78,
+                child: _buildMessageList(),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              _buildUserInput(context),
+            ],
+          ),
         ),
       ),
     );
@@ -83,7 +89,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return AppBar(
       title: Row(
         children: [
-          (widget.img != "nil")
+          (widget.img.isNotEmpty)
               ? ClipOval(
                   child: FadeInImage.assetNetwork(
                     placeholder: 'assets/images/img_not_found.jpg',
@@ -118,25 +124,22 @@ class _ChatRoomState extends State<ChatRoom> {
 
   Widget _buildMessageList() {
     return StreamBuilder(
-        stream: _chatService.getMessages(widget.reciverID),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Text("Error");
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return Align(
-            alignment: Alignment.topCenter,
-            child: _messageList(snapshot),
-          );
-        });
+      stream: _chatService.getMessages(widget.reciverID),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Text("Error");
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return _messageList(snapshot);
+      },
+    );
   }
 
   ListView _messageList(AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
     return ListView.separated(
       controller: scrollController,
-      shrinkWrap: true,
       reverse: true, // Maintain reverse order
       separatorBuilder: (context, index) => const SizedBox.shrink(),
       itemCount: snapshot.data!.docs.length,
@@ -151,22 +154,22 @@ class _ChatRoomState extends State<ChatRoom> {
             isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
         String message = data["message"];
         Timestamp time = data["timestamp"];
-        _getTime(time);
+        String formattedTime = _getTime(time);
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              alignment:
-                  isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+            Align(
+              alignment: alignment,
               child: ChatBubble(
                 message: message,
                 isCurrentUser: isCurrentUser,
-                time: _getTime(time),
               ),
             ),
-            Container(
+            const SizedBox(height: 4), // Add some space between bubble and timestamp
+            Align(
               alignment: alignment,
               child: Text(
-                _getTime(time),
+                formattedTime,
                 style: const TextStyle(fontSize: 12),
               ),
             ),
@@ -195,7 +198,8 @@ class _ChatRoomState extends State<ChatRoom> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
-                  color: Theme.of(context).primaryColor, // Border color when focused
+                  color: Theme.of(context)
+                      .primaryColor, // Border color when focused
                   width: 0.5,
                 ),
               ),
@@ -206,12 +210,13 @@ class _ChatRoomState extends State<ChatRoom> {
           width: 8,
         ),
         CircleAvatar(
+          backgroundColor: Theme.of(context).primaryColor,
           radius: 22,
           child: IconButton(
               onPressed: sendMessage,
               icon: Icon(
                 Icons.send,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).scaffoldBackgroundColor,
               )),
         )
       ],

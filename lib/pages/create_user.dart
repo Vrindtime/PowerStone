@@ -18,8 +18,9 @@ class CreateUser extends StatefulWidget {
 }
 
 class _CreateUserState extends State<CreateUser> {
-  String? imageUrl;
-  String? temputl;
+  String imageUrl = 'https://mashuptech.in/assets/img/logo.svg';
+  late String temputl;
+  bool _isImageSelected = false;
 
   final TextEditingController fnameController = TextEditingController();
 
@@ -79,34 +80,39 @@ class _CreateUserState extends State<CreateUser> {
 
     if (source != null) {
       final file = await ImagePicker().pickImage(source: source);
-      if (file == null) return;
-      String fileName =
-          '${DateTime.now().microsecondsSinceEpoch}.${getExtension(file)}';
-      //ref to storage root
-      Reference referenceRoot = FirebaseStorage.instance.ref();
-      //imgFolder
-      Reference referenceDireImages = referenceRoot.child('userPfp');
+      if (file != null) {
+        String fileName =
+            '${DateTime.now().microsecondsSinceEpoch}.${getExtension(file)}';
+        //ref to storage root
+        Reference referenceRoot = FirebaseStorage.instance.ref();
+        //imgFolder
+        Reference referenceDireImages = referenceRoot.child('userPfp');
 
-      //reference to uplaod img
-      Reference referenceImageToUpload = referenceDireImages.child(fileName);
-      try {
-        await referenceImageToUpload.putFile(File(file.path));
-        temputl = await referenceImageToUpload.getDownloadURL();
-        setState(() {
-          imageUrl = temputl!;
-        });
-      } catch (e) {
-        if (imageUrl!.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(
-                  child: Text(
-                'Error in uploading Image to DB Storage',
-                style: Theme.of(context).textTheme.labelMedium,
-              )),
-              backgroundColor: Colors.red,
-            ),
-          );
+        //reference to uplaod img
+        Reference referenceImageToUpload = referenceDireImages.child(fileName);
+        try {
+          await referenceImageToUpload.putFile(File(file.path)).then((path) {
+            // print("the path is ${path.toString()}");
+          });
+          setState(() {
+            imageUrl = temputl;
+            _isImageSelected = true;
+          });
+        } catch (e) {
+          // print('Stack trace: $stackTrace'); to use this catch (e, stackTrace){}
+          if (imageUrl.isEmpty) {
+            _isImageSelected = false;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Center(
+                    child: Text(
+                  'Error in uploading Image to DB Storage',
+                  style: Theme.of(context).textTheme.labelMedium,
+                )),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         }
       }
     }
@@ -287,7 +293,7 @@ class _CreateUserState extends State<CreateUser> {
           email,
           password,
           note,
-          imageUrl!,
+          imageUrl,
         );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -321,51 +327,47 @@ class _CreateUserState extends State<CreateUser> {
 
   DropdownButtonHideUnderline jobDropdown(BuildContext context) {
     return DropdownButtonHideUnderline(
-      child: Flexible(
-        child: SizedBox(
-          child: DropdownButton2(
-            isExpanded:  true,
-            hint: Text(
-              "Job",
-              style: Theme.of(context).textTheme.labelSmall,
-              overflow: TextOverflow.clip,
-            ),
-            value: selectjob,
-            buttonStyleData: ButtonStyleData(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: Colors.white, width: 0.3),
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
-              elevation: 0,
-            ),
-            onChanged: (String? value) {
-              setState(() {
-                selectjob = value;
-              });
-            },
-            items: jobs
-                .map((String item) => DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(
-                        item,
-                        style: Theme.of(context).textTheme.labelMedium,
-                        overflow: TextOverflow.clip,
-                      ),
-                    ))
-                .toList(),
-            dropdownStyleData: DropdownStyleData(
-              maxHeight: MediaQuery.of(context).size.width * 0.8,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              offset: const Offset(-10, 0),
-              scrollbarTheme: ScrollbarThemeData(
-                radius: const Radius.circular(40),
-                thickness: MaterialStateProperty.all(3),
-                thumbVisibility: MaterialStateProperty.all(true),
-              ),
-            ),
+      child: DropdownButton2(
+        isExpanded: true,
+        hint: Text(
+          "Job",
+          style: Theme.of(context).textTheme.labelSmall,
+          overflow: TextOverflow.clip,
+        ),
+        value: selectjob,
+        buttonStyleData: ButtonStyleData(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.white, width: 0.3),
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+          elevation: 0,
+        ),
+        onChanged: (String? value) {
+          setState(() {
+            selectjob = value;
+          });
+        },
+        items: jobs
+            .map((String item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    item,
+                    style: Theme.of(context).textTheme.labelMedium,
+                    overflow: TextOverflow.clip,
+                  ),
+                ))
+            .toList(),
+        dropdownStyleData: DropdownStyleData(
+          maxHeight: MediaQuery.of(context).size.width * 0.8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          offset: const Offset(-10, 0),
+          scrollbarTheme: ScrollbarThemeData(
+            radius: const Radius.circular(40),
+            thickness: MaterialStateProperty.all(3),
+            thumbVisibility: MaterialStateProperty.all(true),
           ),
         ),
       ),
@@ -476,24 +478,25 @@ class _CreateUserState extends State<CreateUser> {
     );
   }
 
+  // (imageUrl=='nill') ? 'https://mashuptech.in/assets/img/logo.svg' : imageUrl,
   Widget pfpImageUpload(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
       return Stack(
         children: [
           CircleAvatar(
-              maxRadius: 40,
-              child: (imageUrl == "nil")
-                  ? Icon(
-                      Icons.person,
-                      size: 50,
-                    )
-                  : ClipOval(
-                      child: Image.network(
-                      imageUrl!,
-                      fit: BoxFit.cover,
-                      height: 50,
-                      width: 50,
-                    ))),
+            maxRadius: 40,
+          child: (!_isImageSelected)
+              ? Icon(
+                  Icons.person,
+                  size: 50,
+                )
+              : ClipOval(
+                  child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  height: 50,
+                  width: 50,
+                ),),),
           Positioned(
             bottom: -10,
             left: 40,
