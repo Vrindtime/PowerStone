@@ -114,113 +114,111 @@ class ChatList extends StatelessWidget {
   final FirestoreServices firestoreServices;
   final String search;
   final TextEditingController searchController;
-
+  
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: StreamBuilder(
-          stream: firestoreServices.getUserDetails(search),
-          builder: (context, snapshot) {
-            if(snapshot.hasError){
-              return const Text("Error");
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Lottie.asset('assets/lottie/green_dumbell.json',fit: BoxFit.contain);
-            }
-            //if we have data, get all the docs
-            if (snapshot.hasData) {
-              List userList = snapshot.data!.docs;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Chat: ${userList.length}",
-                    style: const TextStyle(
-                        fontSize: 21, fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: userList.length,
-                      itemBuilder: (context, index) {
-                        //get each individual doc
-                        DocumentSnapshot document = userList[index];
-                        String docID = document.id; //keep track of users
-
-                        //get userdata from each doc
-                        Map<String, dynamic> data =
-                            document.data() as Map<String, dynamic>;
-                        String userName =
-                            data['firstName'] ?? "No Name Recieved";
-
-                        String userImg = data['image'] ?? "nil";
-
-                        // display as a list tile
-                        return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).splashColor,
-                            borderRadius: BorderRadius.circular(16)),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(6),
-                          leading: ((document.data() as Map<String, dynamic>)
-                                      .containsKey("image") ||
-                                  userImg.isNotEmpty)
-                              ? ClipOval(
-                                  child: FadeInImage.assetNetwork(
-                                    placeholder:
-                                        'assets/images/img_not_found.jpg',
-                                    image: userImg,
-                                    fit: BoxFit.cover,
-                                    height: 40,
-                                    width: 40,
-                                    imageErrorBuilder:
-                                        (context, error, stackTrace) {
-                                      return const CircleAvatar(
-                                        child: Icon(
-                                          Icons.person_outline_rounded,
-                                          size: 40,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              : const CircleAvatar(
-                                  child: Icon(
-                                    Icons.person_outline_rounded,
-                                    size: 40,
-                                  ),
-                                ),
-                          title: Text(
-                            userName,
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.chat),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ChatRoom(
-                                        username: userName,
-                                        reciverID: docID,
-                                        img: userImg,
-                                      )));
-                            },
-                          ),
-                        ),
-                      );
-                      },
-                    ),
-                  ),
-                ],
-              );
-            } else {
-              return Center(
-                child: Text(
-                  "No User data Exists",
-                  style: Theme.of(context).textTheme.labelLarge,
+    return StreamBuilder(
+        stream: firestoreServices.getUserDetails(search),
+        builder: (context, snapshot) {
+          if(snapshot.hasError){
+            return const Text("Error");
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Lottie.asset('assets/lottie/green_dumbell.json',fit: BoxFit.contain);
+          }
+          //if we have data, get all the docs
+          if (snapshot.hasData) {
+            List userList = snapshot.data!.docs;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Chat: ${userList.length}",
+                  style: const TextStyle(
+                      fontSize: 21, fontWeight: FontWeight.bold),
                 ),
-              );
-            }
-          }),
-    );
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: userList.length,
+                    itemBuilder: (context, index) {
+                      //get each individual doc
+                      DocumentSnapshot document = userList[index];
+                      String docID = document.id; //keep track of users
+    
+                      //get userdata from each doc
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+                      String userName =
+                          data['firstName'] ?? "No Name Recieved";
+    
+                      String userImg = data['image'] ?? "nil";
+    
+                      // display as a list tile
+                      return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).splashColor,
+                          borderRadius: BorderRadius.circular(16)),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(6),
+                        leading: ((document.data() as Map<String, dynamic>)
+                                    .containsKey("image") ||
+                                userImg.isNotEmpty)
+                            ? ClipOval(
+                                child: FadeInImage.assetNetwork(
+                                  placeholder:
+                                      'assets/images/img_not_found.jpg',
+                                  image: userImg,
+                                  fit: BoxFit.cover,
+                                  height: 40,
+                                  width: 40,
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
+                                    return const CircleAvatar(
+                                      child: Icon(
+                                        Icons.person_outline_rounded,
+                                        size: 40,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            : const CircleAvatar(
+                                child: Icon(
+                                  Icons.person_outline_rounded,
+                                  size: 40,
+                                ),
+                              ),
+                        title: Text(
+                          userName,
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.chat),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ChatRoom(
+                                      username: userName,
+                                      reciverID: docID,
+                                      img: userImg,
+                                    )));
+                          },
+                        ),
+                      ),
+                    );
+                    },
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Center(
+              child: Text(
+                "No User data Exists",
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            );
+          }
+        });
   }
 }

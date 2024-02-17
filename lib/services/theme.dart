@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:animations/animations.dart';
 
 ThemeData apptheme = ThemeData(
   useMaterial3: false,
@@ -28,4 +29,10 @@ ThemeData apptheme = ThemeData(
     ),
     titleMedium: const TextStyle(fontSize: 12), // later on specific elements
   ),
+  pageTransitionsTheme: const PageTransitionsTheme(
+    builders: <TargetPlatform, PageTransitionsBuilder>{
+      TargetPlatform.android: ZoomPageTransitionsBuilder(),
+    },
+  ),
+  visualDensity: VisualDensity.adaptivePlatformDensity,
 );
