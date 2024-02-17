@@ -134,4 +134,5 @@ class _UserDetailsState extends State<UserDetails> {
       ),
     );
   }
+  
 }
