@@ -1,7 +1,7 @@
 name: powerstone
 description: "A Gym Managment App to streamline the admin process"
 publish_to: 'none'
-version: 0.0.5
+version: 0.0.8
 
 environment:
   sdk: '>=3.2.6 <4.0.0'

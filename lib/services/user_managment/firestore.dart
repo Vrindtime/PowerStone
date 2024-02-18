@@ -1,24 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:powerstone/services/payment/payment.dart';
 
 class FirestoreServices {
   final CollectionReference _userCollection =
       FirebaseFirestore.instance.collection("user");
+  final PaymentService _paymentService = PaymentService();
 
   //CREATE
   Future<void> addUser(
-    String firstName,
-    String lastName,
-    String dateOfBirth,
-    String gender,
-    String job,
-    String bloodGroup,
-    String height,
-    String weight,
-    String phone,
-    String password,
-    String note,
-    String imageUrl
-  ) {
+      String firstName,
+      String lastName,
+      String dateOfBirth,
+      String gender,
+      String job,
+      String bloodGroup,
+      String height,
+      String weight,
+      String phone,
+      String password,
+      String note,
+      String imageUrl) async {
     // Convert all string values to lowercase
     firstName = firstName.toLowerCase();
     lastName = lastName.toLowerCase();
@@ -27,7 +28,7 @@ class FirestoreServices {
     note = note.toLowerCase();
 
     // Add the user to Firestore
-    return _userCollection.add({
+    DocumentReference userRef = await _userCollection.add({
       'firstName': firstName,
       'lastName': lastName,
       'dateOfBirth': dateOfBirth,
@@ -39,8 +40,21 @@ class FirestoreServices {
       'phone': phone,
       'password': password,
       'note': note,
-      'image':imageUrl,
+      'image': imageUrl,
     });
+
+    // Get current month and year
+    final now = DateTime.now();
+
+    // Create payment status document for the new user
+    try{
+      const Duration(seconds: 1);
+      await _paymentService.addPaymentStatus(userRef.id, now.month, now.year);
+    }catch(e){
+      print('DEBUG ERROR: $e');
+    }
+   
+
   }
 
   Future<int> getTotalUsers() async {
@@ -55,7 +69,9 @@ class FirestoreServices {
     if (value.isNotEmpty) {
       String searchValue =
           value.toLowerCase(); // Convert search value to lowercase
-      String endValue = searchValue.substring(0, searchValue.length - 1) +String.fromCharCode(searchValue.codeUnitAt(searchValue.length - 1) + 1);
+      String endValue = searchValue.substring(0, searchValue.length - 1) +
+          String.fromCharCode(
+              searchValue.codeUnitAt(searchValue.length - 1) + 1);
       userstream = userstream.where('firstName',
           isGreaterThanOrEqualTo: searchValue, isLessThan: endValue);
     }

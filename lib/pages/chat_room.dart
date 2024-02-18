@@ -37,6 +37,7 @@ class _ChatRoomState extends State<ChatRoom> {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(widget.reciverID, _messageController.text);
     }
+    _messageController.text='';
     _messageController.clear();
     // Move the scroll position to the bottom
     scrollController.animateTo(
@@ -89,7 +90,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return AppBar(
       title: Row(
         children: [
-          (widget.img.isNotEmpty)
+          (widget.img != '')
               ? ClipOval(
                   child: FadeInImage.assetNetwork(
                     placeholder: 'assets/images/img_not_found.jpg',
@@ -147,11 +148,16 @@ class _ChatRoomState extends State<ChatRoom> {
         DocumentSnapshot doc = snapshot.data!.docs[index];
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         //is current user
-        bool isCurrentUser = data['senderName'] == _auth.currentUser!.uid;
-
+        String? currentUserFirebase;
+        try{
+          currentUserFirebase = _auth.currentUser?.uid; 
+        }catch(e){
+          print('CUSTOM DEBUG CATCH ERROR:$e');
+        }
+        bool isCurrentUser = data['senderName'] ==currentUserFirebase; //68Gx0DYc0Zcw3NkfBCgIPxIHbOo1
+        print( 'CUSTOM DEBUG: $currentUserFirebase');
         //align msg to right when sender is current user or vice versa
-        var alignment =
-            isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
+        var alignment = isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
         String message = data["message"];
         Timestamp time = data["timestamp"];
         String formattedTime = _getTime(time);

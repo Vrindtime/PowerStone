@@ -23,8 +23,11 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(context),
-      // body: _buildUserList(),
-      body: ChatList(firestoreServices: firestoreServices, search: search, searchController: searchController,),
+      body: ChatList(
+        firestoreServices: firestoreServices,
+        search: search,
+        searchController: searchController,
+      ),
     );
   }
 
@@ -100,7 +103,6 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-
 }
 
 class ChatList extends StatelessWidget {
@@ -114,17 +116,18 @@ class ChatList extends StatelessWidget {
   final FirestoreServices firestoreServices;
   final String search;
   final TextEditingController searchController;
-  
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: firestoreServices.getUserDetails(search),
         builder: (context, snapshot) {
-          if(snapshot.hasError){
+          if (snapshot.hasError) {
             return const Text("Error");
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Lottie.asset('assets/lottie/green_dumbell.json',fit: BoxFit.contain);
+            return Lottie.asset('assets/lottie/green_dumbell.json',
+                fit: BoxFit.contain);
           }
           //if we have data, get all the docs
           if (snapshot.hasData) {
@@ -144,68 +147,64 @@ class ChatList extends StatelessWidget {
                       //get each individual doc
                       DocumentSnapshot document = userList[index];
                       String docID = document.id; //keep track of users
-    
+
                       //get userdata from each doc
                       Map<String, dynamic> data =
                           document.data() as Map<String, dynamic>;
-                      String userName =
-                          data['firstName'] ?? "No Name Recieved";
-    
-                      String userImg = data['image'] ?? "nil";
-    
+                      String userName = data['firstName'] ?? "No Name Recieved";
+
+                      String userImg = data['image'];
+
                       // display as a list tile
                       return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).splashColor,
-                          borderRadius: BorderRadius.circular(16)),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(6),
-                        leading: ((document.data() as Map<String, dynamic>)
-                                    .containsKey("image") ||
-                                userImg.isNotEmpty)
-                            ? ClipOval(
-                                child: FadeInImage.assetNetwork(
-                                  placeholder:
-                                      'assets/images/img_not_found.jpg',
-                                  image: userImg,
-                                  fit: BoxFit.cover,
-                                  height: 40,
-                                  width: 40,
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) {
-                                    return const CircleAvatar(
-                                      child: Icon(
-                                        Icons.person_outline_rounded,
-                                        size: 40,
-                                      ),
-                                    );
-                                  },
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).splashColor,
+                            borderRadius: BorderRadius.circular(16)),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(6),
+                          leading: ((document.data() as Map<String, dynamic>).containsKey("image") || userImg == '')
+                              ? ClipOval(
+                                  child: FadeInImage.assetNetwork(
+                                    placeholder: 'assets/images/gym_logo.png',
+                                    image: userImg,
+                                    fit: BoxFit.cover,
+                                    height: 60,
+                                    width: 60,
+                                    imageErrorBuilder:
+                                        (context, error, stackTrace) {
+                                      return const CircleAvatar(
+                                        child: Icon(
+                                          Icons.person_outline_rounded,
+                                          size: 40,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : const CircleAvatar(
+                                  child: Icon(
+                                    Icons.person_outline_rounded,
+                                    size: 40,
+                                  ),
                                 ),
-                              )
-                            : const CircleAvatar(
-                                child: Icon(
-                                  Icons.person_outline_rounded,
-                                  size: 40,
-                                ),
-                              ),
-                        title: Text(
-                          userName,
-                          style: Theme.of(context).textTheme.labelMedium,
+                          title: Text(
+                            userName,
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.chat),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ChatRoom(
+                                        username: userName,
+                                        reciverID: docID,
+                                        img: userImg,
+                                      )));
+                            },
+                          ),
                         ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.chat),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ChatRoom(
-                                      username: userName,
-                                      reciverID: docID,
-                                      img: userImg,
-                                    )));
-                          },
-                        ),
-                      ),
-                    );
+                      );
                     },
                   ),
                 ),

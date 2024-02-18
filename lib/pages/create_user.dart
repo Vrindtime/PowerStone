@@ -18,8 +18,8 @@ class CreateUser extends StatefulWidget {
 }
 
 class _CreateUserState extends State<CreateUser> {
-  String imageUrl = 'https://mashuptech.in/assets/img/logo.svg';
-  late String temputl;
+  String imageUrl = '';
+  String? temputl;
   bool _isImageSelected = false;
 
   final TextEditingController fnameController = TextEditingController();
@@ -91,13 +91,12 @@ class _CreateUserState extends State<CreateUser> {
         //reference to uplaod img
         Reference referenceImageToUpload = referenceDireImages.child(fileName);
         try {
-          await referenceImageToUpload.putFile(File(file.path)).then((path) {
-            // print("the path is ${path.toString()}");
-          });
+          await referenceImageToUpload.putFile(File(file.path));
+          temputl = await referenceImageToUpload.getDownloadURL();
           setState(() {
-            imageUrl = temputl;
-            _isImageSelected = true;
+            imageUrl = temputl!;
           });
+          print("DUBUG: Success uplaodin pfp");
         } catch (e) {
           // print('Stack trace: $stackTrace'); to use this catch (e, stackTrace){}
           if (imageUrl.isEmpty) {
@@ -141,7 +140,7 @@ class _CreateUserState extends State<CreateUser> {
   ];
 
   String? selectgender;
-  List<String> genders = ["Male", "Fema", "Other"];
+  List<String> genders = ["Male", "Female", "Other"];
 
   @override
   Widget build(BuildContext context) {
@@ -485,18 +484,20 @@ class _CreateUserState extends State<CreateUser> {
         children: [
           CircleAvatar(
             maxRadius: 40,
-          child: (!_isImageSelected)
-              ? Icon(
-                  Icons.person,
-                  size: 50,
-                )
-              : ClipOval(
-                  child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  height: 50,
-                  width: 50,
-                ),),),
+            child: (imageUrl=='' && imageUrl.isEmpty)
+                ? Icon(
+                    Icons.person,
+                    size: 70,
+                  )
+                : ClipOval(
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      height: 70,
+                      width: 70,
+                    ),
+                  ),
+          ),
           Positioned(
             bottom: -10,
             left: 40,
@@ -639,8 +640,7 @@ class NoteInput extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(6.0),
             borderSide: BorderSide(
-              color:
-                  Theme.of(context).primaryColor, // Border color when focused
+              color:Theme.of(context).primaryColor, // Border color when focused
               width: 0.5,
             ),
           ),
