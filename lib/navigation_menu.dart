@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:powerstone/pages/chat_page.dart';
+import 'package:powerstone/pages/home_page.dart';
 import 'package:powerstone/pages/payment_page.dart';
 import 'package:powerstone/pages/userdetails.dart';
 
@@ -34,7 +35,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
         ],
       ),
       body: [
-        const UserDetails(),
+        const HomePage(),
         const UserDetails(),
         const PaymentPage(),
         const ChatPage(),

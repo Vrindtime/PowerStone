@@ -150,7 +150,6 @@ class _CreateUserState extends State<CreateUser> {
         elevation: 0,
         leading: IconButton(
           onPressed: () async {
-            await FirebaseAuth.instance.signOut();
             Navigator.of(context).pop();
           },
           icon: const Icon(Icons.arrow_back_ios),
