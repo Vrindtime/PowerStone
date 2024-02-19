@@ -16,11 +16,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(context),
-      body: const Padding(
-        padding: EdgeInsets.all(8),
+      body: Padding(
+        padding: const EdgeInsets.all(8),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            MonthlyFlowChart(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Monthly Revenue",style: Theme.of(context).textTheme.labelMedium,),
+            ),
+            const MonthlyFlowChart(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Functions",style: Theme.of(context).textTheme.labelMedium,),
+            ),
+            //create the grid
           ],
         ),
       ),
@@ -31,6 +41,8 @@ class _HomePageState extends State<HomePage> {
       toolbarHeight: 65,
       backgroundColor: Colors.transparent,
       elevation: 0,
+      centerTitle: true,
+      title: Text("P O W E R S T O N E",style: Theme.of(context).textTheme.labelMedium!.copyWith(fontSize: 21),),
       leading: IconButton(
         onPressed: () async {
           await FirebaseAuth.instance.signOut();

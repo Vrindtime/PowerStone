@@ -10,8 +10,8 @@ class MonthlyFlowChart extends StatefulWidget {
 
 class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
   List<Color> gradientColors = [
-    Colors.green,
-    Colors.grey,
+    const Color.fromRGBO(39, 221, 127, 1),
+    const Color.fromARGB(255, 9, 145, 75),
   ];
 
   bool showAvg = false;
@@ -58,19 +58,45 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
+      fontSize: 12,
     );
     Widget text;
     switch (value.toInt()) {
+      case 1:
+        text = const Text('JAN', style: style);
+        break;
       case 2:
+        text = const Text('FEB', style: style);
+        break;
+      case 3:
         text = const Text('MAR', style: style);
         break;
+      case 4:
+        text = const Text('APR', style: style);
+        break;
       case 5:
+        text = const Text('MAY', style: style);
+        break;
+      case 6:
         text = const Text('JUN', style: style);
         break;
+      case 7:
+        text = const Text('JUL', style: style);
+        break;
       case 8:
+        text = const Text('AUG', style: style);
+        break;
+      case 9:
         text = const Text('SEP', style: style);
+        break;
+      case 10:
+        text = const Text('OCT', style: style);
+        break;
+      case 11:
+        text = const Text('NOV', style: style);
+        break;
+      case 12:
+        text = const Text('DEC', style: style);
         break;
       default:
         text = const Text('', style: style);
@@ -85,19 +111,24 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 15,
+      fontSize: 12,
     );
     String text;
     switch (value.toInt()) {
       case 1:
         text = '10K';
         break;
+      case 2:
+        text = '20K';
+        break;
       case 3:
-        text = '30k';
+        text = '30K';
+        break;
+      case 4:
+        text = '40K';
         break;
       case 5:
-        text = '50k';
+        text = '50K';
         break;
       default:
         return Container();
@@ -114,15 +145,15 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
         horizontalInterval: 1,
         verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: Colors.red,
-            strokeWidth: 1,
+          return FlLine(
+            color: Colors.grey.withOpacity(0.1),
+            strokeWidth: .5,
           );
         },
         getDrawingVerticalLine: (value) {
-          return const FlLine(
-            color: Colors.red,
-            strokeWidth: 1,
+          return FlLine(
+            color: Colors.grey.withOpacity(0.1),
+            strokeWidth: .5,
           );
         },
       ),
