@@ -413,7 +413,7 @@ class PaymentStatusTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5,horizontal: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).splashColor,
         borderRadius: BorderRadius.circular(16),
