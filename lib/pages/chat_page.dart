@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:powerstone/common/logout_confirmation.dart';
 import 'package:powerstone/common/notification.dart';
 import 'package:powerstone/common/profile_picture.dart';
 import 'package:powerstone/pages/chat_room.dart';
@@ -40,10 +41,13 @@ class _ChatPageState extends State<ChatPage> {
       elevation: 0,
       leading: IconButton(
         onPressed: () async {
-          await FirebaseAuth.instance.signOut();
           // ignore: use_build_context_synchronously
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: ((context) => const LoginPage())));
+          final logoutConfirmed = await showLogoutConfirmation(context);
+          if (logoutConfirmed!) {
+            await FirebaseAuth.instance.signOut();
+            // ignore: use_build_context_synchronously
+            Navigator.of(context).push(MaterialPageRoute(builder: ((context) => const LoginPage())));
+          }
         },
         icon: const Icon(
           Icons.logout_rounded,

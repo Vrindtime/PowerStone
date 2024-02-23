@@ -335,6 +335,7 @@ class _EditProfileState extends State<EditProfile> {
               backgroundColor: Colors.green,
             ),
           );
+          Navigator.pop(context);
         } catch (e) {
           // Show an error message if updating fails
           ScaffoldMessenger.of(context).showSnackBar(

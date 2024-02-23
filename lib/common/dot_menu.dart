@@ -37,6 +37,7 @@ class MenuItems extends StatelessWidget {
         InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfile(docID: docID)));
+            
           },
           child: SizedBox(
             height: 30,
@@ -49,6 +50,7 @@ class MenuItems extends StatelessWidget {
         InkWell(
           onTap: () {
             firestoreServices.deleteUser(docID);
+            Navigator.pop(context);
           },
           child: SizedBox(
             height: 30,

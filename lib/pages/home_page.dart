@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:powerstone/common/logout_confirmation.dart';
 import 'package:powerstone/common/monthly_fl_chart.dart';
 import 'package:powerstone/common/notification.dart';
 import 'package:powerstone/pages/comming_soon.dart';
@@ -21,9 +22,9 @@ class _HomePageState extends State<HomePage> {
     // Add more icons as needed
   ];
   List<String> customText = [
-    'Equipment Managment',
-    'Workout Library Managment',
-    'View User Attendance ',
+    'Equipment\nManagment',
+    'Workout Library\nManagment',
+    'View User\nAttendance ',
     'Resource\nManagment'
   ];
 
@@ -132,10 +133,13 @@ class _HomePageState extends State<HomePage> {
       ),
       leading: IconButton(
         onPressed: () async {
-          await FirebaseAuth.instance.signOut();
           // ignore: use_build_context_synchronously
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: ((context) => const LoginPage())));
+          final logoutConfirmed = await showLogoutConfirmation(context);
+          if (logoutConfirmed!) {
+            await FirebaseAuth.instance.signOut();
+            // ignore: use_build_context_synchronously
+            Navigator.of(context).push(MaterialPageRoute(builder: ((context) => const LoginPage())));
+          }
         },
         icon: const Icon(
           Icons.logout_rounded,
