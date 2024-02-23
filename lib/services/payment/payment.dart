@@ -31,20 +31,20 @@ class PaymentService {
   //add new payment
   Future<void> addPaymentStatus(String userId, int month, int year) async {
     List<String> months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
-    final String monthName = months[month-1];
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+    final String monthName = months[month - 1];
     final DocumentReference userDocRef = _paymentStatus.doc(userId);
 
     try {
@@ -54,10 +54,10 @@ class PaymentService {
       // Set payment status for the specified month
       await userDocRef.collection(year.toString()).doc(monthName).set({
         'status': false,
-        'money': 0,
       });
 
-      print('DEBUG Payment status added successfully for $userId: $month/$year');
+      print(
+          'DEBUG Payment status added successfully for $userId: $month/$year');
     } on FirebaseException catch (e) {
       // Handle specific Firebase errors or generic error
       print('DEBUG Error adding payment status: $e');
@@ -65,5 +65,84 @@ class PaymentService {
       // Handle unexpected errors
       print('DEBUG An unexpected error occurred: $e');
     }
+  }
+
+  //tofind total of a month
+  // Future<Map<String, int>> getMonthlyEarnings(int year) async {
+  //   Map<String, int> monthlyEarnings = {};
+
+  //   try {
+  //     QuerySnapshot paymentStatusSnapshot = await _paymentStatus.get();
+
+  //     for (QueryDocumentSnapshot userDoc in paymentStatusSnapshot.docs) {
+  //       QuerySnapshot monthSnapshot =
+  //           await userDoc.reference.collection(year.toString()).get();
+
+  //       monthSnapshot.docs.forEach((monthDoc) {
+  //         String monthName = monthDoc.id;
+  //         int earnings = monthlyEarnings[monthName] ?? 0;
+  //         bool isPaid = (monthDoc.data() as Map<String, dynamic>)['status'] ?? false;
+
+  //         if (isPaid) {
+  //           // Assuming fixed price of 700rs per user
+  //           earnings += 700;
+  //         }
+  //         monthlyEarnings[monthName] = earnings;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print('Error getting monthly earnings: $e');
+  //   }
+  //   print('DEBUG PAYEMTN>DART: $monthlyEarnings');
+  //   return monthlyEarnings;
+  // }
+
+  Future<Map<String, int>> getMonthlyEarnings() async {
+    _paymentStatus
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+          print("DEBUG LOOP STARTED");
+      for (var doc in querySnapshot.docs) {
+        // Access data from each document
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        print('DEBUG LOOP DATA PRINT: $data');
+      }
+    }).catchError((error) {
+      print('DEBUG: Error reading data: $error');
+    });
+
+    final currentYear =
+        DateTime.now().year; // Handle potentially stale year input
+
+    Map<String, int> monthlyEarnings = {};
+    print('DEBUG: GOT ITNO GET MONTHLY EARN ()');
+
+    //error from try
+    try {
+      print('DEBUG:GOT ITNO try block payment()');
+      QuerySnapshot paymentStatusSnapshot = await _paymentStatus.get();
+      var x = paymentStatusSnapshot.docs.length; // as Map<String,dynamic>;
+      print('DEBUG QUERY SNAPSHOT LNGTH $x');
+      // Iterate over each payment document directly
+      for (QueryDocumentSnapshot paymentDoc in paymentStatusSnapshot.docs) {
+        print('DEBUG:GOT ITNO paymentDoc loop ()');
+        // Extract relevant data from the payment document
+        String userId = paymentDoc.id; // Assuming "id" is your user ID field
+        String monthName =
+            paymentDoc.reference.parent.id; // Get month name from parent
+        bool isPaid = (paymentDoc.data() as Map<String, dynamic>)['status'] ??
+            false; // Handle potential null data
+        print('DEBUG: $isPaid');
+        if (isPaid) {
+          monthlyEarnings[monthName] = (monthlyEarnings[monthName] ?? 0) + 700;
+          print('DEBUG PAYEMTN>DART if else statement: $monthlyEarnings');
+        }
+      }
+    } catch (error) {
+      print('Error getting monthly earnings: $error');
+      // Handle errors more gracefully (e.g., rethrow or return null)
+    }
+
+    return monthlyEarnings;
   }
 }

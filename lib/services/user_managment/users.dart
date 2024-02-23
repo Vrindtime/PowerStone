@@ -19,7 +19,7 @@ class FirestoreServices {
       String phone,
       String password,
       String note,
-      String imageUrl) async {
+      String? imageUrl) async {
     // Convert all string values to lowercase
     firstName = firstName.toLowerCase();
     lastName = lastName.toLowerCase();
@@ -47,14 +47,12 @@ class FirestoreServices {
     final now = DateTime.now();
 
     // Create payment status document for the new user
-    try{
+    try {
       const Duration(seconds: 1);
       await _paymentService.addPaymentStatus(userRef.id, now.month, now.year);
-    }catch(e){
+    } catch (e) {
       print('DEBUG ERROR: $e');
     }
-   
-
   }
 
   Future<int> getTotalUsers() async {
@@ -79,13 +77,53 @@ class FirestoreServices {
   }
 
   //UPDATE
+  Future<void> updateUser(
+      String docID,
+      String firstName,
+      String lastName,
+      String dateOfBirth,
+      String gender,
+      String job,
+      String bloodGroup,
+      String height,
+      String weight,
+      String phone,
+      String password,
+      String note,
+      String? imageUrl) {
+    return _userCollection.doc(docID).update({
+      'firstName': firstName,
+      'lastName': lastName,
+      'dateOfBirth': dateOfBirth,
+      'gender': gender,
+      'job': job,
+      'bloodGroup': bloodGroup,
+      'height': height,
+      'weight': weight,
+      'phone': phone,
+      'password': password,
+      'note': note,
+      'image': imageUrl,
+    });
+  }
 
   //DELETE
+  Future<void> deleteUser(String docID) {
+    return _userCollection.doc(docID).delete();
+  }
 
   //SEARCH
   Stream<QuerySnapshot> searchResult(String value) {
     final userstream =
         _userCollection.where('firstName', isEqualTo: value).snapshots();
     return userstream;
+  }
+
+  // Function to retrieve user data from Firestore
+  Future<Map<String, dynamic>> getUserData(String userId) async {
+    DocumentSnapshot<Map<String, dynamic>> userData =
+        await FirebaseFirestore.instance.collection('user').doc(userId).get();
+
+    return userData.data() ?? {}; // Return user data or empty map if not found
   }
 }

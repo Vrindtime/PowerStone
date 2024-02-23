@@ -4,16 +4,16 @@ import 'package:powerstone/common/notification.dart';
 import 'package:powerstone/common/view_user_list.dart';
 import 'package:powerstone/pages/loginPage.dart';
 import 'package:powerstone/pages/create_user.dart';
-import 'package:powerstone/services/user_managment/firestore.dart';
+import 'package:powerstone/services/user_managment/users.dart';
 
-class UserDetails extends StatefulWidget {
-  const UserDetails({super.key});
+class UserListDetails extends StatefulWidget {
+  const UserListDetails({super.key});
 
   @override
-  State<UserDetails> createState() => _UserDetailsState();
+  State<UserListDetails> createState() => _UserListDetailsState();
 }
 
-class _UserDetailsState extends State<UserDetails> {
+class _UserListDetailsState extends State<UserListDetails> {
   final FirestoreServices firestoreServices = FirestoreServices();
   final TextEditingController searchController = TextEditingController();
   String search = "";

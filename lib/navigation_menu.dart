@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:powerstone/pages/chat_page.dart';
 import 'package:powerstone/pages/home_page.dart';
 import 'package:powerstone/pages/payment_page.dart';
-import 'package:powerstone/pages/userdetails.dart';
+import 'package:powerstone/pages/user_list_details.dart';
 
 class NavigationMenu extends StatefulWidget {
   const NavigationMenu({super.key});
@@ -36,7 +36,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
       ),
       body: [
         const HomePage(),
-        const UserDetails(),
+        const UserListDetails(),
         const PaymentPage(),
         const ChatPage(),
       ][currentPage],

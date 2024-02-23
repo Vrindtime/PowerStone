@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:popover/popover.dart';
+import 'package:powerstone/pages/user/edit_profile.dart';
+import 'package:powerstone/services/user_managment/users.dart';
 
 class DotMenu extends StatelessWidget {
-  const DotMenu({super.key});
+  final String docID;
+  const DotMenu({super.key, required this.docID});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => showPopover(
-        height: 80.0,
+        height: 50.0,
         context: context,
-        bodyBuilder: (context) => const MenuItems(),
+        bodyBuilder: (context) => MenuItems(docID: docID),
         direction: PopoverDirection.left,
         arrowWidth: 10,
         backgroundColor: Theme.of(context).primaryColor
@@ -24,34 +27,29 @@ class DotMenu extends StatelessWidget {
 }
 
 class MenuItems extends StatelessWidget {
-  const MenuItems({super.key});
-
+  final String docID;
+  MenuItems({super.key, required this.docID});
+  final FirestoreServices firestoreServices = FirestoreServices();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfile(docID: docID)));
+          },
           child: SizedBox(
             height: 30,
             width: 100,
             child: Center(
-                child: Text('View',
+                child: Text('Edit Profile',
                     style: Theme.of(context).textTheme.labelMedium)),
           ),
         ),
         InkWell(
-          onTap: () {},
-          child: SizedBox(
-            height: 30,
-            width: 100,
-            child: Center(
-                child: Text('Update',
-                    style: Theme.of(context).textTheme.labelMedium)),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
+          onTap: () {
+            firestoreServices.deleteUser(docID);
+          },
           child: SizedBox(
             height: 30,
             width: 100,

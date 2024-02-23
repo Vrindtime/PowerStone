@@ -4,18 +4,18 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:powerstone/pages/nav_home_page.dart';
 import 'package:powerstone/services/user_managment/users.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-class CreateUser extends StatefulWidget {
-  const CreateUser({super.key});
+class EditProfile extends StatefulWidget {
+  final String docID;
+  const EditProfile({super.key, required this.docID});
 
   @override
-  State<CreateUser> createState() => _CreateUserState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _CreateUserState extends State<CreateUser> {
+class _EditProfileState extends State<EditProfile> {
   String imageUrl = '';
   String? temputl;
   bool isImageSelected = false;
@@ -122,7 +122,7 @@ class _CreateUserState extends State<CreateUser> {
     "none"
   ];
 
-  String? selectjob = 'none';
+  String? selectjob;
   List<String> jobs = [
     "software engineer",
     "web developer",
@@ -134,7 +134,45 @@ class _CreateUserState extends State<CreateUser> {
   ];
 
   String? selectgender;
-  List<String> genders = ["male", "female", "other","none"];
+  List<String> genders = ["male", "female", "other", "none"];
+
+  //UPDATING PART
+  Map<String, dynamic> userData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // Call function to retrieve user data when the widget initializes
+    fetchUserData();
+  }
+
+// Function to fetch user data
+  void fetchUserData() async {
+    userData = await firestoreServices.getUserData(widget.docID);
+
+    // Update the state to trigger a re-build of the widget with fetched data
+    print("DEBUG USERDATA: $userData");
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      fnameController.text = userData['firstName'] ?? '';
+      lnameController.text = userData['lastName'] ?? '';
+      dobController.text = userData['dateOfBirth'] ?? '';
+      selectgender = userData['gender'] ?? 'none';
+      selectjob = userData['job'] ?? 'none';
+      selectedBloodGroup = userData['bloodGroup'] ??'none';
+      heightController.text = userData['height'] ?? '';
+      weightController.text = userData['weight'] ?? '';
+      phoneController.text = userData['phone'] ?? '';
+      passwordController.text = userData['password'] ?? '';
+      noteController.text = userData['note'] ?? '';
+      imageUrl = userData['image'] ?? '';
+    });
+    if (imageUrl != '') {
+      setState(() {
+        isImageSelected = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +284,7 @@ class _CreateUserState extends State<CreateUser> {
                 //login btn
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: createUserbtn(context),
+                  child: editProfileButton(context),
                 ),
               ],
             ),
@@ -257,48 +295,56 @@ class _CreateUserState extends State<CreateUser> {
   }
 
   //login btn
-  GestureDetector createUserbtn(BuildContext context) {
+  GestureDetector editProfileButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
         const Duration(seconds: 1);
         final String firstName = fnameController.text;
         final String lastName = lnameController.text;
         final String dateOfBirth = dobController.text;
-        final String gender = selectgender??'nil';
+        final String gender = selectgender ?? 'nil';
         final String job = selectjob ?? 'nil';
-        final String bloodGroup = selectedBloodGroup??'nil';
+        final String bloodGroup = selectedBloodGroup ?? 'nil';
         final String height = heightController.text;
         final String weight = weightController.text;
         final String email = phoneController.text;
         final String password = passwordController.text;
         final String note = noteController.text;
-
-        await firestoreServices.addUser(
-          firstName,
-          lastName,
-          dateOfBirth,
-          gender,
-          job,
-          bloodGroup,
-          height,
-          weight,
-          email,
-          password,
-          note,
-          imageUrl,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(
-                child: Text(
-              'Success',
-              style: Theme.of(context).textTheme.labelMedium,
-            )),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => AdminHomePage()));
+        final String profilepic = imageUrl;
+        try {
+          // Update the document in Firestore
+          await firestoreServices.updateUser(
+            widget.docID,
+            firstName,
+            lastName,
+            dateOfBirth,
+            gender,
+            job,
+            bloodGroup,
+            height,
+            weight,
+            email,
+            password,
+            note,
+            profilepic,
+          );
+          // Show a success message to the user
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Profile updated successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } catch (e) {
+          // Show an error message if updating fails
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to update profile: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        Navigator.pop(context);
       },
       child: Container(
         height: 50,
@@ -309,7 +355,7 @@ class _CreateUserState extends State<CreateUser> {
         ),
         child: Center(
           child: Text(
-            "Create User",
+            "Update User",
             style: Theme.of(context).textTheme.labelLarge,
           ),
         ),
@@ -380,11 +426,6 @@ class _CreateUserState extends State<CreateUser> {
           ),
           elevation: 0,
         ),
-        onChanged: (String? value) {
-          setState(() {
-            selectedBloodGroup = value;
-          });
-        },
         items: bloodGroups
             .map((String item) => DropdownMenuItem<String>(
                   value: item,
@@ -394,6 +435,11 @@ class _CreateUserState extends State<CreateUser> {
                   ),
                 ))
             .toList(),
+        onChanged: (value) {
+          setState(() {
+            selectedBloodGroup = value;
+          });
+        },
         dropdownStyleData: DropdownStyleData(
           maxHeight: MediaQuery.of(context).size.width * 0.8,
           decoration: BoxDecoration(
@@ -470,14 +516,13 @@ class _CreateUserState extends State<CreateUser> {
     );
   }
 
-  // (imageUrl=='nill') ? 'https://mashuptech.in/assets/img/logo.svg' : imageUrl,
   Widget pfpImageUpload(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
       return Stack(
         children: [
           CircleAvatar(
             maxRadius: 40,
-            child: (imageUrl=='' && imageUrl.isEmpty)
+            child: (imageUrl == '' && imageUrl.isEmpty)
                 ? Icon(
                     Icons.person,
                     size: 70,
@@ -633,7 +678,8 @@ class NoteInput extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(6.0),
             borderSide: BorderSide(
-              color:Theme.of(context).primaryColor, // Border color when focused
+              color:
+                  Theme.of(context).primaryColor, // Border color when focused
               width: 0.5,
             ),
           ),

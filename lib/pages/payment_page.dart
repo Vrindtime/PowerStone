@@ -4,9 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:powerstone/common/notification.dart';
+import 'package:powerstone/common/profile_picture.dart';
 import 'package:powerstone/pages/loginPage.dart';
 import 'package:powerstone/services/payment/payment.dart';
-import 'package:powerstone/services/user_managment/firestore.dart';
+import 'package:powerstone/services/user_managment/users.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({
@@ -151,7 +152,8 @@ class _PaymentPageState extends State<PaymentPage> {
                                 document.data() as Map<String, dynamic>;
                             String userName =
                                 data['firstName'] ?? "No Name Recieved";
-                            String userImg = data['image'] ?? "nil";
+                            String userImg = data['image'] ??
+                                "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg";
 
                             // Retrieve payment status for February 2024
                             Stream<DocumentSnapshot> paymentStream =
@@ -188,7 +190,8 @@ class _PaymentPageState extends State<PaymentPage> {
                                                     paymentSnapshot)
                                             : const SizedBox.shrink();
                                       case 'Paid':
-                                        return (payStatus == true && payStatus != null)
+                                        return (payStatus == true &&
+                                                payStatus != null)
                                             ? PaymentStatusTile(
                                                 document: document,
                                                 userImg: userImg,
@@ -198,7 +201,8 @@ class _PaymentPageState extends State<PaymentPage> {
                                                     paymentSnapshot)
                                             : const SizedBox.shrink();
                                       case 'UnPaid':
-                                        return (payStatus == false && payStatus != null)
+                                        return (payStatus == false &&
+                                                payStatus != null)
                                             ? PaymentStatusTile(
                                                 document: document,
                                                 userImg: userImg,
@@ -392,7 +396,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
 class PaymentStatusTile extends StatelessWidget {
   const PaymentStatusTile({
-    Key? key,
+    super.key,
     required this.document,
     required this.userImg,
     required this.userName,
@@ -416,32 +420,15 @@ class PaymentStatusTile extends StatelessWidget {
       ),
       child: ListTile(
           contentPadding: const EdgeInsets.all(6),
-          leading:
-              ((document.data() as Map<String, dynamic>).containsKey("image") ||
-                      userImg.isNotEmpty)
-                  ? ClipOval(
-                      child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/images/img_not_found.jpg',
-                        image: userImg,
-                        fit: BoxFit.cover,
-                        height: 40,
-                        width: 40,
-                        imageErrorBuilder: (context, error, stackTrace) {
-                          return const CircleAvatar(
-                            child: Icon(
-                              Icons.person_outline_rounded,
-                              size: 40,
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  : const CircleAvatar(
-                      child: Icon(
-                        Icons.person_outline_rounded,
-                        size: 40,
-                      ),
-                    ),
+          leading: (userImg.isNotEmpty)
+              ? ProfilePicture(userImg: userImg)
+              : const CircleAvatar(
+                  radius: 40,
+                  child: Icon(
+                    Icons.person_outline_rounded,
+                    size: 50,
+                  ),
+                ),
           title: Text(
             userName,
             style: Theme.of(context).textTheme.labelMedium,

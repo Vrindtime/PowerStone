@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:powerstone/common/notification.dart';
+import 'package:powerstone/common/profile_picture.dart';
 import 'package:powerstone/pages/chat_room.dart';
 import 'package:powerstone/pages/loginPage.dart';
-import 'package:powerstone/services/user_managment/firestore.dart';
+import 'package:powerstone/services/user_managment/users.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -163,29 +164,13 @@ class ChatList extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16)),
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(6),
-                          leading: ((document.data() as Map<String, dynamic>).containsKey("image") || userImg == '')
-                              ? ClipOval(
-                                  child: FadeInImage.assetNetwork(
-                                    placeholder: 'assets/images/gym_logo.png',
-                                    image: userImg,
-                                    fit: BoxFit.cover,
-                                    height: 60,
-                                    width: 60,
-                                    imageErrorBuilder:
-                                        (context, error, stackTrace) {
-                                      return const CircleAvatar(
-                                        child: Icon(
-                                          Icons.person_outline_rounded,
-                                          size: 40,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
+                          leading: (userImg.isNotEmpty)
+                              ? ProfilePicture(userImg: userImg)
                               : const CircleAvatar(
+                                  radius: 40,
                                   child: Icon(
                                     Icons.person_outline_rounded,
-                                    size: 40,
+                                    size: 50,
                                   ),
                                 ),
                           title: Text(
@@ -221,3 +206,5 @@ class ChatList extends StatelessWidget {
         });
   }
 }
+
+

@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:powerstone/common/dot_menu.dart';
-import 'package:powerstone/services/user_managment/firestore.dart';
+import 'package:powerstone/common/profile_picture.dart';
+import 'package:powerstone/services/user_managment/users.dart';
 
 class ViewUserList extends StatelessWidget {
   const ViewUserList({
@@ -38,7 +39,7 @@ class ViewUserList extends StatelessWidget {
                       itemBuilder: (context, index) {
                         //get each individual doc
                         DocumentSnapshot document = userList[index];
-                        // String docID = document.id; //keep track of users
+                        String docID = document.id; //keep track of users
 
                         //get userdata from each doc
                         Map<String, dynamic> data =
@@ -56,38 +57,20 @@ class ViewUserList extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16)),
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(6),
-                            leading: (data.containsKey("image") &&
-                                    userImg.isNotEmpty)
-                                ? ClipOval(
-                                    child: FadeInImage.assetNetwork(
-                                      placeholder:
-                                          'assets/images/img_not_found.jpg',
-                                      image: userImg,
-                                      fit: BoxFit.cover,
-                                      height: 40,
-                                      width: 40,
-                                      imageErrorBuilder:
-                                          (context, error, stackTrace) {
-                                        return const CircleAvatar(
-                                          child: Icon(
-                                            Icons.person_outline_rounded,
-                                            size: 40,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  )
+                            leading: (userImg.isNotEmpty)
+                                ? ProfilePicture(userImg: userImg)
                                 : const CircleAvatar(
+                                    radius: 40,
                                     child: Icon(
                                       Icons.person_outline_rounded,
-                                      size: 40,
+                                      size: 50,
                                     ),
                                   ),
                             title: Text(
                               userName,
                               style: Theme.of(context).textTheme.labelMedium,
                             ),
-                            trailing: const DotMenu(),
+                            trailing: DotMenu(docID: docID),
                           ),
                         );
                       },
