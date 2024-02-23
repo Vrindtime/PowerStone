@@ -17,6 +17,12 @@ class _UserListDetailsState extends State<UserListDetails> {
   final FirestoreServices firestoreServices = FirestoreServices();
   final TextEditingController searchController = TextEditingController();
   String search = "";
+  //for dropdownbutton
+  String selectedGender = 'All'; 
+  String selectedAgeRange = 'All'; 
+  String selectedJob='All';
+  String selectedBloodGroup='All';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +34,7 @@ class _UserListDetailsState extends State<UserListDetails> {
             const SizedBox(height: 20),
             addUserSection(context),
             const SizedBox(height: 20),
+            //ddb for gender , blodgroup, age, job
             const Placeholder(
               fallbackHeight: 150,
             ),

@@ -122,7 +122,7 @@ class _CreateUserState extends State<CreateUser> {
     "none"
   ];
 
-  String? selectjob = 'none';
+  String? selectjob;
   List<String> jobs = [
     "software engineer",
     "web developer",
