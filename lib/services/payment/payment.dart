@@ -1,6 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PaymentService {
+  List<String> months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
   final CollectionReference _userCollection =
       FirebaseFirestore.instance.collection("user");
 
@@ -30,21 +44,7 @@ class PaymentService {
 
   //add new payment
   Future<void> addPaymentStatus(String userId, int month, int year) async {
-    List<String> months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ];
-    final String monthName = months[month - 1];
+    final String monthName = months[month];
     final DocumentReference userDocRef = _paymentStatus.doc(userId);
 
     try {
@@ -64,6 +64,35 @@ class PaymentService {
     } catch (e) {
       // Handle unexpected errors
       print('DEBUG An unexpected error occurred: $e');
+    }
+  }
+
+  Future<void> updatePaymentStatus(String uid, int month, int year, bool status) async {
+        print('DEBUG Got into updatePaymentStatus');
+        print('DEBUG YEAR $year AND MONTH $month String AND STATUS $status AND UID $uid');
+    // String documentPath = 'payment/$uid/years/$year/months/$month';
+
+    final DocumentReference userDocRef = _paymentStatus.doc(uid);
+    final String monthName = months[month];
+    print('DEBUG YEAR $year AND MONTH $monthName String AND STATUS $status AND UID $uid');
+    await userDocRef.collection(year.toString()).doc(monthName).set({
+      'status': status,
+    }, SetOptions(merge: true));
+  }
+
+  // Function to handle checkbox change
+  Future<void> handleCheckboxChange(String uid, int month, int year, bool value) async {
+    if (value) {
+      // Update status to true
+      try {
+        updatePaymentStatus(uid, month, year, true);
+      } catch (e) {
+        print("ERROR: LINE 89 payment.dart ; ERROR UPDATING STATUS");
+        addPaymentStatus(uid, month, year);
+      }
+    } else {
+      // Initialize document with default status false
+      addPaymentStatus(uid, month, year);
     }
   }
 
@@ -98,10 +127,8 @@ class PaymentService {
   // }
 
   Future<Map<String, int>> getMonthlyEarnings() async {
-    _paymentStatus
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-          print("DEBUG LOOP STARTED");
+    _paymentStatus.get().then((QuerySnapshot querySnapshot) {
+      print("DEBUG LOOP STARTED");
       for (var doc in querySnapshot.docs) {
         // Access data from each document
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;

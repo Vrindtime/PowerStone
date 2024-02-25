@@ -49,7 +49,7 @@ class FirestoreServices {
     // Create payment status document for the new user
     try {
       const Duration(seconds: 1);
-      await _paymentService.addPaymentStatus(userRef.id, now.month, now.year);
+      await _paymentService.handleCheckboxChange(userRef.id, now.month,now.year,false);
     } catch (e) {
       print('DEBUG ERROR: $e');
     }

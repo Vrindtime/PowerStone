@@ -187,8 +187,12 @@ class _PaymentPageState extends State<PaymentPage> {
                                                 userImg: userImg,
                                                 userName: userName,
                                                 payStatus: payStatus,
-                                                paymentSnapshot:
-                                                    paymentSnapshot)
+                                                docID: docID,
+                                                givenMonth: selectedMonth ??
+                                                    now.month.toString(),
+                                                givenYear: selectedYear ??
+                                                    now.year.toString(),
+                                              )
                                             : const SizedBox.shrink();
                                       case 'Paid':
                                         return (payStatus == true &&
@@ -198,8 +202,12 @@ class _PaymentPageState extends State<PaymentPage> {
                                                 userImg: userImg,
                                                 userName: userName,
                                                 payStatus: payStatus,
-                                                paymentSnapshot:
-                                                    paymentSnapshot)
+                                                docID: docID,
+                                                givenMonth: selectedMonth ??
+                                                    now.month.toString(),
+                                                givenYear: selectedYear ??
+                                                    now.year.toString(),
+                                              )
                                             : const SizedBox.shrink();
                                       case 'UnPaid':
                                         return (payStatus == false &&
@@ -209,8 +217,12 @@ class _PaymentPageState extends State<PaymentPage> {
                                                 userImg: userImg,
                                                 userName: userName,
                                                 payStatus: payStatus,
-                                                paymentSnapshot:
-                                                    paymentSnapshot)
+                                                docID: docID,
+                                                givenMonth: selectedMonth ??
+                                                    now.month.toString(),
+                                                givenYear: selectedYear ??
+                                                    now.year.toString(),
+                                              )
                                             : const SizedBox.shrink();
                                       default:
                                         return const Center(
@@ -334,7 +346,8 @@ class _PaymentPageState extends State<PaymentPage> {
           if (logoutConfirmed!) {
             await FirebaseAuth.instance.signOut();
             // ignore: use_build_context_synchronously
-            Navigator.of(context).push(MaterialPageRoute(builder: ((context) => const LoginPage())));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: ((context) => const LoginPage())));
           }
         },
         icon: const Icon(
@@ -399,25 +412,58 @@ class _PaymentPageState extends State<PaymentPage> {
 }
 
 class PaymentStatusTile extends StatelessWidget {
-  const PaymentStatusTile({
+  PaymentStatusTile({
     super.key,
     required this.document,
     required this.userImg,
     required this.userName,
     required this.payStatus,
-    required this.paymentSnapshot,
+    required this.docID,
+    required this.givenMonth,
+    required this.givenYear,
   });
 
   final DocumentSnapshot<Object?> document;
   final String userImg;
   final String userName;
+  final String docID;
+  final String givenMonth;
+  final String givenYear;
   final bool? payStatus;
-  final DocumentSnapshot<Object?> paymentSnapshot;
+  final PaymentService paymentService = PaymentService();
+
+  List<String> months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  List<String> years = [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024"
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5,horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).splashColor,
         borderRadius: BorderRadius.circular(16),
@@ -441,11 +487,15 @@ class PaymentStatusTile extends StatelessWidget {
             value: payStatus,
             onChanged: (bool? value) {
               try {
-                paymentSnapshot.reference.update({
-                  'status': value,
-                });
+                // Convert givenYear from string to integer
+                int year = int.parse(givenYear);
+                int monthIndex = months.indexOf(givenMonth);
+                print('DEBUG YEAR $givenYear AND MONTH $givenMonth String');
+                print(' MONTH $monthIndex INDEX');
+                paymentService.handleCheckboxChange(
+                    docID, monthIndex, year, value ?? false);
               } catch (e) {
-                print("Not Found");
+                print("DEBUG ERROR PASSING handleCheckboxChange ");
               }
             },
             // tristate: true, //fix the user list and remove this DEBUG
