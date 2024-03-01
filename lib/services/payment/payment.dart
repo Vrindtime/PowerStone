@@ -67,109 +67,83 @@ class PaymentService {
     }
   }
 
-  Future<void> updatePaymentStatus(String uid, int month, int year, bool status) async {
-        print('DEBUG Got into updatePaymentStatus');
-        print('DEBUG YEAR $year AND MONTH $month String AND STATUS $status AND UID $uid');
-    // String documentPath = 'payment/$uid/years/$year/months/$month';
+  Future<void> updatePaymentStatus(
+      String uid, int month, int year, bool status) async {
+    print('DEBUG: $status');
+    print('DEBUG:  Got into updatePaymentStatus: UID: $uid');
+    try {
+      final DocumentReference userDocRef = _paymentStatus.doc(uid);
+      final String monthName = months[month];
+      print(
+          'DEBUG:  YEAR $year AND MONTH $monthName AND STATUS $status AND UID $uid');
 
-    final DocumentReference userDocRef = _paymentStatus.doc(uid);
-    final String monthName = months[month];
-    print('DEBUG YEAR $year AND MONTH $monthName String AND STATUS $status AND UID $uid');
-    await userDocRef.collection(year.toString()).doc(monthName).set({
-      'status': status,
-    }, SetOptions(merge: true));
+      userDocRef.collection(year.toString()).doc(monthName).set({
+        'status': status,
+      }, SetOptions(merge: true)).then((_) async {
+        int? currentValue = await getMonthEarning(monthName, year.toString());
+        print('DEBUG:  CURRENT VALUE: $currentValue');
+
+        if (status == true) {
+          currentValue += 700;
+        } else {
+          currentValue -= 700;
+        }
+        currentValue = currentValue.clamp(0, double.infinity) as int;
+        print('DEBUG: UPDATED CURRENT VALUE: $currentValue');
+
+        /// clamp: stays within the specified range, which is 0 to positive infinity in this case
+        final earningsRef = _paymentStatus
+            .doc('earning')
+            .collection(year.toString())
+            .doc(monthName);
+        earningsRef.set({'value': currentValue}, SetOptions(merge: true));
+        print('DEBUG TOTAL VALUE IN  updatePaymentStatus $currentValue');
+      });
+    } catch (e) {
+      print('DEBUG: UPDATE PAYMENT STATUS : $e');
+    }
   }
 
   // Function to handle checkbox change
-  Future<void> handleCheckboxChange(String uid, int month, int year, bool value) async {
-    if (value) {
-      // Update status to true
-      try {
-        updatePaymentStatus(uid, month, year, true);
-      } catch (e) {
-        print("ERROR: LINE 89 payment.dart ; ERROR UPDATING STATUS");
-        addPaymentStatus(uid, month, year);
-      }
-    } else {
-      // Initialize document with default status false
+  Future<void> handleCheckboxChange(
+      String uid, int month, int year, bool value) async {
+    try {
+      updatePaymentStatus(uid, month, year, value);
+    } catch (_) {
       addPaymentStatus(uid, month, year);
     }
   }
 
-  //tofind total of a month
-  // Future<Map<String, int>> getMonthlyEarnings(int year) async {
-  //   Map<String, int> monthlyEarnings = {};
+  //DELETE PAYMENT OF THE USER
+  Future<void> deletePaymentUser(String docID) {
+    return _paymentStatus.doc(docID).delete();
+  }
 
-  //   try {
-  //     QuerySnapshot paymentStatusSnapshot = await _paymentStatus.get();
-
-  //     for (QueryDocumentSnapshot userDoc in paymentStatusSnapshot.docs) {
-  //       QuerySnapshot monthSnapshot =
-  //           await userDoc.reference.collection(year.toString()).get();
-
-  //       monthSnapshot.docs.forEach((monthDoc) {
-  //         String monthName = monthDoc.id;
-  //         int earnings = monthlyEarnings[monthName] ?? 0;
-  //         bool isPaid = (monthDoc.data() as Map<String, dynamic>)['status'] ?? false;
-
-  //         if (isPaid) {
-  //           // Assuming fixed price of 700rs per user
-  //           earnings += 700;
-  //         }
-  //         monthlyEarnings[monthName] = earnings;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print('Error getting monthly earnings: $e');
-  //   }
-  //   print('DEBUG PAYEMTN>DART: $monthlyEarnings');
-  //   return monthlyEarnings;
-  // }
-
-  Future<Map<String, int>> getMonthlyEarnings() async {
-    _paymentStatus.get().then((QuerySnapshot querySnapshot) {
-      print("DEBUG LOOP STARTED");
-      for (var doc in querySnapshot.docs) {
-        // Access data from each document
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        print('DEBUG LOOP DATA PRINT: $data');
-      }
-    }).catchError((error) {
-      print('DEBUG: Error reading data: $error');
-    });
-
-    final currentYear =
-        DateTime.now().year; // Handle potentially stale year input
-
-    Map<String, int> monthlyEarnings = {};
-    print('DEBUG: GOT ITNO GET MONTHLY EARN ()');
-
-    //error from try
-    try {
-      print('DEBUG:GOT ITNO try block payment()');
-      QuerySnapshot paymentStatusSnapshot = await _paymentStatus.get();
-      var x = paymentStatusSnapshot.docs.length; // as Map<String,dynamic>;
-      print('DEBUG QUERY SNAPSHOT LNGTH $x');
-      // Iterate over each payment document directly
-      for (QueryDocumentSnapshot paymentDoc in paymentStatusSnapshot.docs) {
-        print('DEBUG:GOT ITNO paymentDoc loop ()');
-        // Extract relevant data from the payment document
-        String userId = paymentDoc.id; // Assuming "id" is your user ID field
-        String monthName =
-            paymentDoc.reference.parent.id; // Get month name from parent
-        bool isPaid = (paymentDoc.data() as Map<String, dynamic>)['status'] ??
-            false; // Handle potential null data
-        print('DEBUG: $isPaid');
-        if (isPaid) {
-          monthlyEarnings[monthName] = (monthlyEarnings[monthName] ?? 0) + 700;
-          print('DEBUG PAYEMTN>DART if else statement: $monthlyEarnings');
-        }
-      }
-    } catch (error) {
-      print('Error getting monthly earnings: $error');
-      // Handle errors more gracefully (e.g., rethrow or return null)
+  Future<int> getMonthEarning(String monthName, String year) async {
+    DocumentSnapshot earningsSnapshot = await _paymentStatus
+        .doc('earning')
+        .collection(year.toString())
+        .doc(monthName)
+        .get();
+    if (earningsSnapshot.exists) {
+      Map<String, dynamic> data =
+          earningsSnapshot.data() as Map<String, dynamic>;
+      int value = data['value'];
+      print(
+          'DEBUG TOTAL VALUE IN GETMONTHEARNING $value in payemnt.dart ;line 127');
+      return value;
+    } else {
+      return 0;
     }
+  }
 
-    return monthlyEarnings;
+  //READ PAYMENT STATUS
+  Stream<DocumentSnapshot<Object?>> getMonthEarningCurrent(
+      String year, String month) {
+    return _paymentStatus
+        .doc('earning')
+        .collection(year)
+        .doc(month)
+        .snapshots();
   }
 }

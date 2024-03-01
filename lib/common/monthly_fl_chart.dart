@@ -37,7 +37,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
   // Method to fetch monthly earnings data
   void fetchMonthlyEarnings() async {
     print('DEBUG:GOT ITNO FETCH MONTHLY ()');
-    monthlyEarnings = await monthlyService.getMonthlyEarnings();
+    // monthlyEarnings = await monthlyService.getMonthlyEarnings();
     print('DEBUG Monthly Earning in fl_chart.dart: $monthlyEarnings');
     setState(() {}); // Update the widget after fetching data
   }

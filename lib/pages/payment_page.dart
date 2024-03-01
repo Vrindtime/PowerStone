@@ -50,8 +50,6 @@ class _PaymentPageState extends State<PaymentPage> {
     "2023",
     "2024"
   ];
-
-  int totalValue = 0;
   final List<String> paymentOptions = ["All User", "Paid", "UnPaid"];
   String selectedFilter = 'All User';
   final FirestoreServices firestoreServices = FirestoreServices();
@@ -61,11 +59,37 @@ class _PaymentPageState extends State<PaymentPage> {
   final now = DateTime.now();
   String? selectedMonth;
   String? selectedYear;
+  int totalValue = 0;
+
+  // void fetchMonthEarning(String monthName, String year) async {
+  //   int monthEarning =
+  //       await paymentService.getMonthEarning(monthName, year.toString());
+  //   setState(() {
+  //     totalValue = monthEarning;
+  //   });
+
+  //   print(
+  //       'DEBUG fetchMonthEarning :TOTAL VALUE: $monthEarning , Month: $monthName , Year: $year ; file: payment_page.dart , line est:72');
+  // }
+
+  // Stream<DocumentSnapshot<Map<String, dynamic>>> totalValuefunc(){
+  //   return FirebaseFirestore.instance
+  //               .collection('payment')
+  //               .doc('earning')
+  //               .collection(selectedYear!)
+  //               .doc(selectedMonth!)
+  //               .snapshots();
+  // }
+  // late final totalval;
   @override
   void initState() {
     super.initState();
-    selectedMonth = months[now.month - 1];
-    selectedYear = now.year.toString();
+    int currentmonth = now.month;
+    int currentyear = now.year;
+    selectedMonth = months[currentmonth - 1];
+    selectedYear = currentyear.toString();
+    // fetchMonthEarning(selectedMonth!, selectedYear!);
+    // totalval = paymentService.getMonthEarningCurrent(selectedYear!, selectedYear!);
   }
 
   @override
@@ -75,17 +99,6 @@ class _PaymentPageState extends State<PaymentPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Text(
-              "Monthly Income: $totalValue",
-              style: Theme.of(context)
-                  .textTheme
-                  .labelMedium
-                  ?.copyWith(fontSize: 21),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -119,70 +132,107 @@ class _PaymentPageState extends State<PaymentPage> {
                 )
                 .toList(),
           ),
+          StreamBuilder(
+            // stream: paymentService.getMonthEarningCurrent(selectedYear!, selectedMonth!),
+            // stream: totalval,
+            stream:FirebaseFirestore.instance
+                .collection('payment')
+                .doc('earning')
+                .collection(selectedYear!)
+                .doc(selectedMonth!)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasData) {
+                final doc = snapshot.data!;
+                int totalValuecus = doc['value'] ?? 0;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Text(
+                    "Monthly Income: $totalValuecus",
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium
+                        ?.copyWith(fontSize: 21),
+                  ),
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
           Expanded(
-            child: StreamBuilder(
-              stream: paymentService.getUserDetailsP(search),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Center(
-                    child: Text("Error has Occurred"),
-                  );
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Lottie.asset('assets/lottie/green_dumbell.json',
-                      fit: BoxFit.contain);
-                }
-                if (snapshot.hasData) {
-                  List userList = snapshot.data!.docs;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: userList.length,
-                          itemBuilder: (context, index) {
-                            //get each individual doc
-                            DocumentSnapshot document = userList[index];
-                            String docID = document.id; //keep track of users
+            child: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder(
+                    stream: firestoreServices.getUserDetails(search),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Center(
+                          child: Text("Error has Occurred"),
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Lottie.asset('assets/lottie/green_dumbell.json',
+                            fit: BoxFit.contain);
+                      }
+                      if (snapshot.hasData) {
+                        List userList = snapshot.data!.docs;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: userList.length,
+                                itemBuilder: (context, index) {
+                                  //get each individual doc
+                                  DocumentSnapshot document = userList[index];
+                                  String docID =
+                                      document.id; //keep track of users
 
-                            //get userdata from each doc
-                            Map<String, dynamic> data =
-                                document.data() as Map<String, dynamic>;
-                            String userName =
-                                data['firstName'] ?? "No Name Recieved";
-                            String userImg = data['image'] ??
-                                "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg";
+                                  //get userdata from each doc
+                                  Map<String, dynamic> data =
+                                      document.data() as Map<String, dynamic>;
+                                  String userName =
+                                      data['firstName'] ?? "No Name Recieved";
+                                  String userImg = data['image'] ??
+                                      "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg";
 
-                            // Retrieve payment status for February 2024
-                            Stream<DocumentSnapshot> paymentStream =
-                                paymentService.getPaymentStatusForMonth(
-                                    docID, selectedYear!, selectedMonth!);
+                                  // Retrieve payment status for February 2024
+                                  Stream<DocumentSnapshot> paymentStream =
+                                      paymentService.getPaymentStatusForMonth(
+                                          docID, selectedYear!, selectedMonth!);
+                                  // display as a list tile
+                                  return StreamBuilder(
+                                      stream: paymentStream,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasError) {
+                                          return const Text(
+                                              'Error retrieving payment status');
+                                        }
+                                        if (snapshot.hasData) {
+                                          DocumentSnapshot paymentSnapshot =
+                                              snapshot.data as DocumentSnapshot;
+                                          bool? payStatus;
+                                          if (paymentSnapshot.exists) {
+                                            final data = paymentSnapshot.data()
+                                                as Map<String, dynamic>;
+                                            payStatus = data['status'];
+                                            payStatus ??= false;
+                                          }
 
-                            // display as a list tile
-                            return StreamBuilder(
-                                stream: paymentStream,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError) {
-                                    return const Text(
-                                        'Error retrieving payment status');
-                                  }
-                                  if (snapshot.hasData) {
-                                    DocumentSnapshot paymentSnapshot =
-                                        snapshot.data as DocumentSnapshot;
-                                    bool? payStatus;
-                                    if (paymentSnapshot.exists) {
-                                      final data = paymentSnapshot.data()
-                                          as Map<String, dynamic>;
-                                      payStatus = data['status'] as bool?;
-                                    }
-
-                                    switch (selectedFilter) {
-                                      case 'All User':
-                                        return (payStatus != null)
-                                            ? PaymentStatusTile(
+                                          switch (selectedFilter) {
+                                            case 'All User':
+                                              return PaymentStatusTile(
                                                 document: document,
                                                 userImg: userImg,
                                                 userName: userName,
@@ -192,54 +242,59 @@ class _PaymentPageState extends State<PaymentPage> {
                                                     now.month.toString(),
                                                 givenYear: selectedYear ??
                                                     now.year.toString(),
-                                              )
-                                            : const SizedBox.shrink();
-                                      case 'Paid':
-                                        return (payStatus == true &&
-                                                payStatus != null)
-                                            ? PaymentStatusTile(
-                                                document: document,
-                                                userImg: userImg,
-                                                userName: userName,
-                                                payStatus: payStatus,
-                                                docID: docID,
-                                                givenMonth: selectedMonth ??
-                                                    now.month.toString(),
-                                                givenYear: selectedYear ??
-                                                    now.year.toString(),
-                                              )
-                                            : const SizedBox.shrink();
-                                      case 'UnPaid':
-                                        return (payStatus == false &&
-                                                payStatus != null)
-                                            ? PaymentStatusTile(
-                                                document: document,
-                                                userImg: userImg,
-                                                userName: userName,
-                                                payStatus: payStatus,
-                                                docID: docID,
-                                                givenMonth: selectedMonth ??
-                                                    now.month.toString(),
-                                                givenYear: selectedYear ??
-                                                    now.year.toString(),
-                                              )
-                                            : const SizedBox.shrink();
-                                      default:
+                                              );
+                                            case 'Paid':
+                                              return (payStatus == true)
+                                                  ? PaymentStatusTile(
+                                                      document: document,
+                                                      userImg: userImg,
+                                                      userName: userName,
+                                                      payStatus: payStatus,
+                                                      docID: docID,
+                                                      givenMonth:
+                                                          selectedMonth ??
+                                                              now.month
+                                                                  .toString(),
+                                                      givenYear: selectedYear ??
+                                                          now.year.toString(),
+                                                    )
+                                                  : const SizedBox.shrink();
+                                            case 'UnPaid':
+                                              return (payStatus == false)
+                                                  ? PaymentStatusTile(
+                                                      document: document,
+                                                      userImg: userImg,
+                                                      userName: userName,
+                                                      payStatus: payStatus,
+                                                      docID: docID,
+                                                      givenMonth:
+                                                          selectedMonth ??
+                                                              now.month
+                                                                  .toString(),
+                                                      givenYear: selectedYear ??
+                                                          now.year.toString(),
+                                                    )
+                                                  : const SizedBox.shrink();
+                                            default:
+                                              return const Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                          }
+                                        }
                                         return const Center(
                                             child: CircularProgressIndicator());
-                                    }
-                                  }
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                });
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
+                                      });
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return const CircularProgressIndicator();
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -263,6 +318,7 @@ class _PaymentPageState extends State<PaymentPage> {
         onChanged: (String? value) {
           setState(() {
             selectedMonth = value;
+            // fetchMonthEarning(selectedMonth!, selectedYear!);
           });
         },
         items: months
@@ -306,6 +362,7 @@ class _PaymentPageState extends State<PaymentPage> {
         onChanged: (String? value) {
           setState(() {
             selectedYear = value;
+            // fetchMonthEarning(selectedMonth!, selectedYear!);
           });
         },
         items: years
@@ -411,7 +468,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 }
 
-class PaymentStatusTile extends StatelessWidget {
+class PaymentStatusTile extends StatefulWidget {
   PaymentStatusTile({
     super.key,
     required this.document,
@@ -430,6 +487,12 @@ class PaymentStatusTile extends StatelessWidget {
   final String givenMonth;
   final String givenYear;
   final bool? payStatus;
+
+  @override
+  State<PaymentStatusTile> createState() => _PaymentStatusTileState();
+}
+
+class _PaymentStatusTileState extends State<PaymentStatusTile> {
   final PaymentService paymentService = PaymentService();
 
   List<String> months = [
@@ -470,8 +533,8 @@ class PaymentStatusTile extends StatelessWidget {
       ),
       child: ListTile(
           contentPadding: const EdgeInsets.all(6),
-          leading: (userImg.isNotEmpty)
-              ? ProfilePicture(userImg: userImg)
+          leading: (widget.userImg.isNotEmpty)
+              ? ProfilePicture(userImg: widget.userImg)
               : const CircleAvatar(
                   radius: 40,
                   child: Icon(
@@ -480,22 +543,21 @@ class PaymentStatusTile extends StatelessWidget {
                   ),
                 ),
           title: Text(
-            userName,
+            widget.userName,
             style: Theme.of(context).textTheme.labelMedium,
           ),
           trailing: Checkbox(
-            value: payStatus,
-            onChanged: (bool? value) {
+            value: widget.payStatus ?? false,
+            onChanged: (bool? value) async {
               try {
                 // Convert givenYear from string to integer
-                int year = int.parse(givenYear);
-                int monthIndex = months.indexOf(givenMonth);
-                print('DEBUG YEAR $givenYear AND MONTH $givenMonth String');
-                print(' MONTH $monthIndex INDEX');
-                paymentService.handleCheckboxChange(
-                    docID, monthIndex, year, value ?? false);
+                int year = int.parse(widget.givenYear);
+                int monthIndex = months.indexOf(widget.givenMonth);
+                await paymentService.handleCheckboxChange(
+                    widget.docID, monthIndex, year, value ?? true);
+                // widget.updateTotalValue();
               } catch (e) {
-                print("DEBUG ERROR PASSING handleCheckboxChange ");
+                print("DEBUG: ERROR PASSING handleCheckboxChange: $e");
               }
             },
             // tristate: true, //fix the user list and remove this DEBUG

@@ -109,6 +109,7 @@ class FirestoreServices {
 
   //DELETE
   Future<void> deleteUser(String docID) {
+    _paymentService.deletePaymentUser(docID);
     return _userCollection.doc(docID).delete();
   }
 
