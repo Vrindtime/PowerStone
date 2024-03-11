@@ -10,22 +10,29 @@ class ViewUserList extends StatelessWidget {
     required this.firestoreServices,
     required this.search,
     required this.searchController,
+    required this.gender,
+    required this.job,
+    required this.bloodGroup,
   });
 
   final FirestoreServices firestoreServices;
   final String search;
+  final String gender;
+  final String job;
+  final String bloodGroup;
   final TextEditingController searchController;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: StreamBuilder(
-          stream: firestoreServices.getUserDetails(search),
-          builder: (context, snapshot) {
-            //if we have data, get all the docs
-            if (snapshot.hasData) {
-              List userList = snapshot.data!.docs;
-              return Column(
+    return StreamBuilder(
+        // stream: firestoreServices.getUserDetails(search),
+        stream: firestoreServices.getUserDetailsTest(value: search,bloodGroup: bloodGroup,gender: gender,job: job),
+        builder: (context, snapshot) {
+          //if we have data, get all the docs
+          if (snapshot.hasData) {
+            List userList = snapshot.data!.docs;
+            return Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -33,6 +40,7 @@ class ViewUserList extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 21, fontWeight: FontWeight.bold),
                   ),
+                  // SampleWidget(),
                   Expanded(
                     child: ListView.builder(
                       itemCount: userList.length,
@@ -40,15 +48,15 @@ class ViewUserList extends StatelessWidget {
                         //get each individual doc
                         DocumentSnapshot document = userList[index];
                         String docID = document.id; //keep track of users
-
+                                
                         //get userdata from each doc
                         Map<String, dynamic> data =
                             document.data() as Map<String, dynamic>;
                         String userName =
                             data['firstName'] ?? "No Name Recieved";
-
+                                
                         String userImg = data['image'] ?? "nil";
-
+                                
                         // display as a list tile
                         return Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
@@ -77,16 +85,26 @@ class ViewUserList extends StatelessWidget {
                     ),
                   ),
                 ],
-              );
-            } else {
-              return Center(
-                child: Text(
-                  "No User data Exists",
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-              );
-            }
-          }),
-    );
+              ),
+            );
+          } else {
+            return Center(
+              child: Text(
+                "No User data Exists",
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            );
+          }
+        });
   }
+}
+
+SampleWidget() {
+  List<Widget> abc = [];
+  for (int i = 0; i < 5; i++) {
+    abc.add(Text('$i'));
+  }
+  return Column(
+    children: abc,
+  );
 }

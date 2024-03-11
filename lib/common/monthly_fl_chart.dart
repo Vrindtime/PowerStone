@@ -10,7 +10,8 @@ class MonthlyFlowChart extends StatefulWidget {
 }
 
 class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
-  PaymentService monthlyService = PaymentService(); // Create an instance of PaymentService
+  PaymentService monthlyService =
+      PaymentService(); // Create an instance of PaymentService
   Map<String, int>? monthlyEarnings; // Declare monthlyEarnings variable
 
   final List<String> months = [
@@ -71,6 +72,32 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
     const Color.fromARGB(255, 9, 145, 75),
   ];
 
+  Future<List<FlSpot>> getMonthEarningsAsSpots() async {
+    final List<FlSpot> spots = [];
+    final now = DateTime.now();
+    PaymentService service = PaymentService();
+
+    for (int i = 0; i < months.length; i++) {
+      try {
+        final monthSnapshot = await service.getMonthEarningPerMonth(
+            now.year.toString(), months[i]);
+        // Access the data appropriately based on its type:
+        final Map<String, dynamic>? data =
+            monthSnapshot.data() as Map<String, dynamic>?;
+        final monthEarning = data?['value'] ?? 0;
+
+        // Or:
+        // final monthEarning = monthSnapshot.data?['value'] ?? 0; // If data is a Map
+        spots.add(FlSpot(i.toDouble(), monthEarning.toDouble()));
+      } catch (error) {
+        print("Error fetching data: $error");
+        // Handle the error appropriately
+      }
+    }
+
+    return spots;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -154,22 +181,25 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = '5k';
+        text = '';
         break;
       case 1:
-        text = '10K';
-        break;
-      case 2:
         text = '20K';
         break;
-      case 3:
-        text = '30K';
-        break;
-      case 4:
+      case 2:
         text = '40K';
         break;
+      case 3:
+        text = '60K';
+        break;
+      case 4:
+        text = '80K';
+        break;
       case 5:
-        text = '50K';
+        text = '100K';
+        break;
+      case 6:
+        text = '120K';
         break;
       default:
         return Container();
@@ -178,14 +208,15 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
     return Text(text, style: style, textAlign: TextAlign.center);
   }
 
-  LineChartData mainData() {
-    List<FlSpot> spots = [];
+  LineChartData mainData(){
+    // List<FlSpot> spots = [];
     if (monthlyEarnings != null && monthlyEarnings!.isNotEmpty) {
+      // spots = await getMonthEarningsAsSpots();
       Map<String, int> normalizedEarnings =
           normalizeMonthlyEarnings(monthlyEarnings!);
       normalizedEarnings.forEach((month, earnings) {
-        int monthIndex = months.indexOf(month) + 1;
-        spots.add(FlSpot(monthIndex.toDouble(), earnings.toDouble()));
+        // int monthIndex = months.indexOf(month) + 1;
+        // spots.add(FlSpot(monthIndex.toDouble(), earnings.toDouble()));
       });
     }
 
@@ -244,7 +275,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
       lineBarsData: [
         LineChartBarData(
           spots: const [
-            //max 5 , min 0
+          //   // max 5 , min 0
             FlSpot(0, 5.00), // JAN
             FlSpot(1, 4.44), // FEB
             FlSpot(2, 3.44), // MAR

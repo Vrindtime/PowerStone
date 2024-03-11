@@ -49,7 +49,8 @@ class FirestoreServices {
     // Create payment status document for the new user
     try {
       const Duration(seconds: 1);
-      await _paymentService.handleCheckboxChange(userRef.id, now.month,now.year,false);
+      await _paymentService.handleCheckboxChange(
+          userRef.id, now.month, now.year, false);
     } catch (e) {
       print('DEBUG ERROR: $e');
     }
@@ -62,6 +63,55 @@ class FirestoreServices {
   }
 
   //READ
+  Stream<QuerySnapshot> getUserDetailsTest({
+    String value = '',
+    String bloodGroup = '',
+    String gender = '',
+    String job = '',
+  }) {
+    Query userstream = _userCollection;
+
+    if (value.isNotEmpty) {
+      String searchValue =
+          value.toLowerCase(); // Convert search value to lowercase
+      String endValue = searchValue.substring(0, searchValue.length - 1) +
+          String.fromCharCode(
+              searchValue.codeUnitAt(searchValue.length - 1) + 1);
+      userstream = userstream.where('firstName',
+          isGreaterThanOrEqualTo: searchValue, isLessThan: endValue);
+    }
+
+    print('DEBUG: FN:$value ; BG: $bloodGroup ; G:$gender ; J: $job');
+
+    // Apply filters for blood group, gender, and job if provided
+    if (bloodGroup.isNotEmpty) {
+      userstream = userstream.where('bloodGroup', isEqualTo: bloodGroup);
+    }
+    if (gender.isNotEmpty) {
+      userstream = userstream.where('gender', isEqualTo: gender);
+    }
+    if (job.isNotEmpty) {
+      userstream = userstream.where('job', isEqualTo: job);
+    }
+
+    // If only blood group is provided, but others are null, still include all users with that blood group
+    if (bloodGroup.isNotEmpty && gender.isEmpty && job.isEmpty) {
+      return userstream.snapshots();
+    }
+
+    // If only gender is provided, but others are null, still include all users with that gender
+    if (gender.isNotEmpty && bloodGroup.isEmpty && job.isEmpty) {
+      return userstream.snapshots();
+    }
+
+    // If only job is provided, but others are null, still include all users with that job
+    if (job.isNotEmpty && bloodGroup.isEmpty && gender.isEmpty) {
+      return userstream.snapshots();
+    }
+
+    return userstream.snapshots();
+  }
+
   Stream<QuerySnapshot> getUserDetails(String value) {
     Query userstream = _userCollection.orderBy('firstName', descending: false);
     if (value.isNotEmpty) {

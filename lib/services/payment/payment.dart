@@ -137,13 +137,24 @@ class PaymentService {
     }
   }
 
-  //READ PAYMENT STATUS
-  Stream<DocumentSnapshot<Object?>> getMonthEarningCurrent(
-      String year, String month) {
-    return _paymentStatus
-        .doc('earning')
-        .collection(year)
-        .doc(month)
-        .snapshots();
+  //READ PAYMENT STATUS PER MONTH
+  // Stream<DocumentSnapshot<Object?>> getMonthEarningPerMonth(
+  //     String year, String month) {
+  //   return _paymentStatus
+  //       .doc('earning')
+  //       .collection(year)
+  //       .doc(month)
+  //       .snapshots();
+  // }
+
+  Future<DocumentSnapshot<Object?>> getMonthEarningPerMonth(
+      String year, String month) async {
+    // Get the document reference
+    final docRef = _paymentStatus.doc('earning').collection(year).doc(month);
+
+    // Get the snapshot using a Future
+    final snapshot = await docRef.get();
+
+    return snapshot;
   }
 }
