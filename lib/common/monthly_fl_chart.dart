@@ -14,6 +14,8 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
       PaymentService(); // Create an instance of PaymentService
   Map<String, int>? monthlyEarnings; // Declare monthlyEarnings variable
 
+  late List<FlSpot> spots = [];
+  bool isLoading = true;
   final List<String> months = [
     "January",
     "February",
@@ -32,6 +34,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
   @override
   void initState() {
     super.initState();
+    mainData();
     fetchMonthlyEarnings(); // Fetch monthly earnings data when the widget initializes
   }
 
@@ -97,7 +100,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
 
     return spots;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -112,9 +115,14 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
               top: 15,
               bottom: 2,
             ),
-            child: LineChart(
-              mainData(),
+            child: Visibility(
+              visible: isLoading,
+              replacement:LineChart( chartWidget()),
+              child: const Center(child: CircularProgressIndicator(),),
             ),
+            // child: LineChart(
+            //   mainData(),
+            // ),
           ),
         ],
       ),
@@ -181,7 +189,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = '';
+        text = '10k';
         break;
       case 1:
         text = '20K';
@@ -208,18 +216,22 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
     return Text(text, style: style, textAlign: TextAlign.center);
   }
 
-  LineChartData mainData(){
-    // List<FlSpot> spots = [];
+  Future mainData() async {
     if (monthlyEarnings != null && monthlyEarnings!.isNotEmpty) {
-      // spots = await getMonthEarningsAsSpots();
+      spots = await getMonthEarningsAsSpots();
       Map<String, int> normalizedEarnings =
           normalizeMonthlyEarnings(monthlyEarnings!);
       normalizedEarnings.forEach((month, earnings) {
-        // int monthIndex = months.indexOf(month) + 1;
-        // spots.add(FlSpot(monthIndex.toDouble(), earnings.toDouble()));
+        int monthIndex = months.indexOf(month) + 1;
+        spots.add(FlSpot(monthIndex.toDouble(), earnings.toDouble()));
       });
     }
+    setState(() {
+      isLoading = !isLoading;
+    });
+  }
 
+  LineChartData chartWidget(){
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -274,22 +286,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-          //   // max 5 , min 0
-            FlSpot(0, 5.00), // JAN
-            FlSpot(1, 4.44), // FEB
-            FlSpot(2, 3.44), // MAR
-            FlSpot(3, 4.44), // APR
-            FlSpot(4, 5.44), // MAY
-            FlSpot(5, 4.44), // JUN
-            FlSpot(6, 4.44), // JUL
-            FlSpot(7, 2.44), // AUG
-            FlSpot(8, 2.44), // SEP
-            FlSpot(9, 3.44), // OCT
-            FlSpot(10, 1.44), // NOV
-            FlSpot(11, 3.44), // DEC
-          ],
-          // spots: spots,
+          spots: spots,
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
