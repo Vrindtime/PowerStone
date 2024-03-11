@@ -61,26 +61,6 @@ class _PaymentPageState extends State<PaymentPage> {
   String? selectedYear;
   int totalValue = 0;
 
-  // void fetchMonthEarning(String monthName, String year) async {
-  //   int monthEarning =
-  //       await paymentService.getMonthEarning(monthName, year.toString());
-  //   setState(() {
-  //     totalValue = monthEarning;
-  //   });
-
-  //   print(
-  //       'DEBUG fetchMonthEarning :TOTAL VALUE: $monthEarning , Month: $monthName , Year: $year ; file: payment_page.dart , line est:72');
-  // }
-
-  // Stream<DocumentSnapshot<Map<String, dynamic>>> totalValuefunc(){
-  //   return FirebaseFirestore.instance
-  //               .collection('payment')
-  //               .doc('earning')
-  //               .collection(selectedYear!)
-  //               .doc(selectedMonth!)
-  //               .snapshots();
-  // }
-  // late final totalval;
   @override
   void initState() {
     super.initState();

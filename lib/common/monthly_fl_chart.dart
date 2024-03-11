@@ -34,17 +34,9 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
   @override
   void initState() {
     super.initState();
-    mainData();
-    fetchMonthlyEarnings(); // Fetch monthly earnings data when the widget initializes
+    mainData(); // Fetch monthly earnings data when the widget initializes
   }
 
-  // Method to fetch monthly earnings data
-  void fetchMonthlyEarnings() async {
-    print('DEBUG:GOT ITNO FETCH MONTHLY ()');
-    // monthlyEarnings = await monthlyService.getMonthlyEarnings();
-    print('DEBUG Monthly Earning in fl_chart.dart: $monthlyEarnings');
-    setState(() {}); // Update the widget after fetching data
-  }
 
   Map<String, int> normalizeMonthlyEarnings(Map<String, int> fetchedEarnings) {
     // Define the range of the graph
@@ -76,26 +68,25 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
   ];
 
   Future<List<FlSpot>> getMonthEarningsAsSpots() async {
-    final List<FlSpot> spots = [];
     final now = DateTime.now();
     PaymentService service = PaymentService();
 
-    for (int i = 0; i < months.length; i++) {
+    for (int i = 0; i < 12; i++) { //11 cause i starts from 0 and no.of months in a year =12
       try {
         final monthSnapshot = await service.getMonthEarningPerMonth(
             now.year.toString(), months[i]);
+            print('DEBUG: YEAR: ${now.year.toString()} & Month: ${months[i]}; Line 86 montly_fl_chart ');
         // Access the data appropriately based on its type:
         final Map<String, dynamic>? data =
-            monthSnapshot.data() as Map<String, dynamic>?;
+            monthSnapshot.data() as Map<String, dynamic>?; //type changing
         final monthEarning = data?['value'] ?? 0;
-
-        // Or:
-        // final monthEarning = monthSnapshot.data?['value'] ?? 0; // If data is a Map
-        spots.add(FlSpot(i.toDouble(), monthEarning.toDouble()));
+         print('DEBUG: FLSpot 0: ${i.toDouble()} & 1: ${monthEarning.toDouble()/10000}; Line 91 montly_fl_chart ');
+        double normalizedEarning = monthEarning.toDouble() / 20000; 
+        spots.add(FlSpot(i.toDouble(), normalizedEarning));
       } catch (error) {
         print("Error fetching data: $error");
-        // Handle the error appropriately
       }
+      setState(() {}); // Update the widget after fetching data
     }
 
     return spots;
@@ -115,14 +106,9 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
               top: 15,
               bottom: 2,
             ),
-            child: Visibility(
-              visible: isLoading,
-              replacement:LineChart( chartWidget()),
-              child: const Center(child: CircularProgressIndicator(),),
+            child: LineChart(
+              chartWidget(),
             ),
-            // child: LineChart(
-            //   mainData(),
-            // ),
           ),
         ],
       ),
@@ -217,15 +203,17 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
   }
 
   Future mainData() async {
-    if (monthlyEarnings != null && monthlyEarnings!.isNotEmpty) {
+    print('DEBUG: GOT INTO MAINDATA()');
       spots = await getMonthEarningsAsSpots();
+      print('DEBUG: SPOTS: $spots');
+      
       Map<String, int> normalizedEarnings =
           normalizeMonthlyEarnings(monthlyEarnings!);
       normalizedEarnings.forEach((month, earnings) {
         int monthIndex = months.indexOf(month) + 1;
-        spots.add(FlSpot(monthIndex.toDouble(), earnings.toDouble()));
+        double normalizedEarning = earnings.toDouble() / 500000; 
+        // spots.add(FlSpot(monthIndex.toDouble(), normalizedEarning));
       });
-    }
     setState(() {
       isLoading = !isLoading;
     });

@@ -98,13 +98,3 @@ class ViewUserList extends StatelessWidget {
         });
   }
 }
-
-SampleWidget() {
-  List<Widget> abc = [];
-  for (int i = 0; i < 5; i++) {
-    abc.add(Text('$i'));
-  }
-  return Column(
-    children: abc,
-  );
-}

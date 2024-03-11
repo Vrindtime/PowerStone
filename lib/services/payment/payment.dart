@@ -103,7 +103,7 @@ class PaymentService {
       print('DEBUG: UPDATE PAYMENT STATUS : $e');
     }
   }
-
+  
   // Function to handle checkbox change
   Future<void> handleCheckboxChange(
       String uid, int month, int year, bool value) async {
@@ -138,23 +138,15 @@ class PaymentService {
   }
 
   //READ PAYMENT STATUS PER MONTH
-  // Stream<DocumentSnapshot<Object?>> getMonthEarningPerMonth(
-  //     String year, String month) {
-  //   return _paymentStatus
-  //       .doc('earning')
-  //       .collection(year)
-  //       .doc(month)
-  //       .snapshots();
-  // }
-
   Future<DocumentSnapshot<Object?>> getMonthEarningPerMonth(
       String year, String month) async {
+        print('DEBUG: GOT INTO getMonthEarningPerMonth()');
     // Get the document reference
     final docRef = _paymentStatus.doc('earning').collection(year).doc(month);
 
     // Get the snapshot using a Future
     final snapshot = await docRef.get();
-
+    print('DEBUG: getMonthEarningPerMonth(): $snapshot');
     return snapshot;
   }
 }
