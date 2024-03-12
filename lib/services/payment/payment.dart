@@ -128,9 +128,11 @@ class PaymentService {
     if (earningsSnapshot.exists) {
       Map<String, dynamic> data =
           earningsSnapshot.data() as Map<String, dynamic>;
-      int value = data['value'];
+          print(
+          'DEBUG TOTAL VALUE IN GETMONTHEARNING null rn in payemnt.dart ;line 132');
+      int value = data['value']??0;
       print(
-          'DEBUG TOTAL VALUE IN GETMONTHEARNING $value in payemnt.dart ;line 127');
+          'DEBUG TOTAL VALUE IN GETMONTHEARNING $value in payemnt.dart ;line 135');
       return value;
     } else {
       return 0;

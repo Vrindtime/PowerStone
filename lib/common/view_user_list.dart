@@ -40,7 +40,6 @@ class ViewUserList extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 21, fontWeight: FontWeight.bold),
                   ),
-                  // SampleWidget(),
                   Expanded(
                     child: ListView.builder(
                       itemCount: userList.length,

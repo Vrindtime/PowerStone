@@ -68,8 +68,6 @@ class _PaymentPageState extends State<PaymentPage> {
     int currentyear = now.year;
     selectedMonth = months[currentmonth - 1];
     selectedYear = currentyear.toString();
-    // fetchMonthEarning(selectedMonth!, selectedYear!);
-    // totalval = paymentService.getMonthEarningCurrent(selectedYear!, selectedYear!);
   }
 
   @override
@@ -113,9 +111,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 .toList(),
           ),
           StreamBuilder(
-            // stream: paymentService.getMonthEarningCurrent(selectedYear!, selectedMonth!),
-            // stream: totalval,
-            stream:FirebaseFirestore.instance
+            stream: FirebaseFirestore.instance
                 .collection('payment')
                 .doc('earning')
                 .collection(selectedYear!)
@@ -130,7 +126,13 @@ class _PaymentPageState extends State<PaymentPage> {
               }
               if (snapshot.hasData) {
                 final doc = snapshot.data!;
-                int totalValuecus = doc['value'] ?? 0;
+                int totalValuecus = 0;
+                final data = doc.data(); // Retrieve the data map from the DocumentSnapshot
+
+                if (data != null && data.containsKey('value')) {
+                  // Check if 'value' field exists in the data map
+                  totalValuecus = data['value'];
+                }
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),
@@ -196,6 +198,11 @@ class _PaymentPageState extends State<PaymentPage> {
                                       stream: paymentStream,
                                       builder: (context, snapshot) {
                                         if (snapshot.hasError) {
+                                          return const Text(
+                                              'Error retrieving payment status');
+                                        }
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.none) {
                                           return const Text(
                                               'Error retrieving payment status');
                                         }
@@ -298,7 +305,6 @@ class _PaymentPageState extends State<PaymentPage> {
         onChanged: (String? value) {
           setState(() {
             selectedMonth = value;
-            // fetchMonthEarning(selectedMonth!, selectedYear!);
           });
         },
         items: months
@@ -342,7 +348,6 @@ class _PaymentPageState extends State<PaymentPage> {
         onChanged: (String? value) {
           setState(() {
             selectedYear = value;
-            // fetchMonthEarning(selectedMonth!, selectedYear!);
           });
         },
         items: years
