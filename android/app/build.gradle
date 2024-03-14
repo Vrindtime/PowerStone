@@ -30,7 +30,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.example.gym"
-    compileSdkVersion flutter.compileSdkVersion
+    // compileSdkVersion flutter.compileSdkVersion //said 34
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {

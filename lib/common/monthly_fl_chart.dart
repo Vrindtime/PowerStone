@@ -75,12 +75,10 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
       try {
         final monthSnapshot = await service.getMonthEarningPerMonth(
             now.year.toString(), months[i]);
-            print('DEBUG: YEAR: ${now.year.toString()} & Month: ${months[i]}; Line 86 montly_fl_chart ');
         // Access the data appropriately based on its type:
         final Map<String, dynamic>? data =
             monthSnapshot.data() as Map<String, dynamic>?; //type changing
         final monthEarning = data?['value'] ?? 0;
-         print('DEBUG: FLSpot 0: ${i.toDouble()} & 1: ${monthEarning.toDouble()/10000}; Line 91 montly_fl_chart ');
         double normalizedEarning = monthEarning.toDouble() / 20000; 
         spots.add(FlSpot(i.toDouble(), normalizedEarning));
       } catch (error) {
@@ -175,7 +173,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = '10k';
+        text = '<5K';
         break;
       case 1:
         text = '20K';
@@ -203,9 +201,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
   }
 
   Future mainData() async {
-    print('DEBUG: GOT INTO MAINDATA()');
       spots = await getMonthEarningsAsSpots();
-      print('DEBUG: SPOTS: $spots');
       
       Map<String, int> normalizedEarnings =
           normalizeMonthlyEarnings(monthlyEarnings!);

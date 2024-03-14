@@ -56,8 +56,8 @@ class PaymentService {
         'status': false,
       });
 
-      print(
-          'DEBUG Payment status added successfully for $userId: $month/$year');
+      // print(
+      //     'DEBUG Payment status added successfully for $userId: $month/$year');
     } on FirebaseException catch (e) {
       // Handle specific Firebase errors or generic error
       print('DEBUG Error adding payment status: $e');
@@ -69,19 +69,19 @@ class PaymentService {
 
   Future<void> updatePaymentStatus(
       String uid, int month, int year, bool status) async {
-    print('DEBUG: $status');
-    print('DEBUG:  Got into updatePaymentStatus: UID: $uid');
+    // print('DEBUG: $status');
+    // print('DEBUG:  Got into updatePaymentStatus: UID: $uid');
     try {
       final DocumentReference userDocRef = _paymentStatus.doc(uid);
       final String monthName = months[month];
-      print(
-          'DEBUG:  YEAR $year AND MONTH $monthName AND STATUS $status AND UID $uid');
+      // print(
+      //     'DEBUG:  YEAR $year AND MONTH $monthName AND STATUS $status AND UID $uid');
 
       userDocRef.collection(year.toString()).doc(monthName).set({
         'status': status,
       }, SetOptions(merge: true)).then((_) async {
         int? currentValue = await getMonthEarning(monthName, year.toString());
-        print('DEBUG:  CURRENT VALUE: $currentValue');
+        // print('DEBUG:  CURRENT VALUE: $currentValue');
 
         if (status == true) {
           currentValue += 700;
@@ -89,7 +89,7 @@ class PaymentService {
           currentValue -= 700;
         }
         currentValue = currentValue.clamp(0, double.infinity) as int;
-        print('DEBUG: UPDATED CURRENT VALUE: $currentValue');
+        // print('DEBUG: UPDATED CURRENT VALUE: $currentValue');
 
         /// clamp: stays within the specified range, which is 0 to positive infinity in this case
         final earningsRef = _paymentStatus
@@ -97,7 +97,7 @@ class PaymentService {
             .collection(year.toString())
             .doc(monthName);
         earningsRef.set({'value': currentValue}, SetOptions(merge: true));
-        print('DEBUG TOTAL VALUE IN  updatePaymentStatus $currentValue');
+        // print('DEBUG TOTAL VALUE IN  updatePaymentStatus $currentValue');
       });
     } catch (e) {
       print('DEBUG: UPDATE PAYMENT STATUS : $e');
@@ -128,11 +128,7 @@ class PaymentService {
     if (earningsSnapshot.exists) {
       Map<String, dynamic> data =
           earningsSnapshot.data() as Map<String, dynamic>;
-          print(
-          'DEBUG TOTAL VALUE IN GETMONTHEARNING null rn in payemnt.dart ;line 132');
       int value = data['value']??0;
-      print(
-          'DEBUG TOTAL VALUE IN GETMONTHEARNING $value in payemnt.dart ;line 135');
       return value;
     } else {
       return 0;
@@ -142,13 +138,11 @@ class PaymentService {
   //READ PAYMENT STATUS PER MONTH
   Future<DocumentSnapshot<Object?>> getMonthEarningPerMonth(
       String year, String month) async {
-        print('DEBUG: GOT INTO getMonthEarningPerMonth()');
     // Get the document reference
     final docRef = _paymentStatus.doc('earning').collection(year).doc(month);
 
     // Get the snapshot using a Future
     final snapshot = await docRef.get();
-    print('DEBUG: getMonthEarningPerMonth(): $snapshot');
     return snapshot;
   }
 }

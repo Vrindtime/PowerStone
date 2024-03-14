@@ -1,10 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
-
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:powerstone/pages/nav_home_page.dart';
+import 'package:powerstone/navigation_menu.dart';
 import 'package:powerstone/services/user_managment/users.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
@@ -298,7 +297,7 @@ class _CreateUserState extends State<CreateUser> {
           ),
         );
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => AdminHomePage()));
+            .push(MaterialPageRoute(builder: (context) => NavigationMenu()));
       },
       child: Container(
         height: 50,

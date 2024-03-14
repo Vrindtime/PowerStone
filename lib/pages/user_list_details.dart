@@ -204,8 +204,9 @@ class _UserListDetailsState extends State<UserListDetails> {
             color: Theme.of(context).primaryColor,
             iconSize: 36,
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: ((context) => const NotificationWidget())));
+              Navigator.pushNamed(context, '/notification');
+              // Navigator.of(context).push(MaterialPageRoute(
+              //     builder: ((context) => const NotificationWidget())));
             },
           ),
         )

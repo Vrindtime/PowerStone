@@ -138,7 +138,8 @@ class _HomePageState extends State<HomePage> {
           if (logoutConfirmed!) {
             await FirebaseAuth.instance.signOut();
             // ignore: use_build_context_synchronously
-            Navigator.of(context).push(MaterialPageRoute(builder: ((context) => const LoginPage())));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: ((context) => const LoginPage())));
           }
         },
         icon: const Icon(
@@ -155,8 +156,19 @@ class _HomePageState extends State<HomePage> {
             color: Theme.of(context).primaryColor,
             iconSize: 36,
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: ((context) => const NotificationWidget())));
+              Navigator.pushNamed(context, '/notification');
+              // Navigator.of(context).push(MaterialPageRoute(
+              //     builder: ((context) => const NotificationWidget())));
+              // Navigator.of(context).push(
+              //   PageRouteBuilder(
+              //     pageBuilder: (context, animation, secondaryAnimation) =>
+              //         const NotificationWidget(),
+              //     transitionsBuilder:
+              //         (context, animation, secondaryAnimation, child) {
+              //       return child;
+              //     },
+              //   ),
+              // );
             },
           ),
         )

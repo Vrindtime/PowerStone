@@ -15,6 +15,7 @@ dependencies:
   firebase_auth: ^4.17.3  #email auth service provider
   firebase_core: ^2.25.3  #to make firebase commands run
   firebase_storage: ^11.6.5  # to save the img to storage db
+  firebase_messaging: ^14.7.19 #for push notification
 
   #style
   lottie: ^3.0.0  #for animation
@@ -27,7 +28,10 @@ dependencies:
   dropdown_button2: ^2.3.9
   animations: ^2.0.11
   intl: ^0.19.0
-  fl_chart: ^0.66.2
+  fl_chart: ^0.66.2 # to show the monthly earning gragh in homepage
+  flutter_local_notifications: ^17.0.0 #to show the notification in the app itself(android)
+  http: ^1.2.0
+  
   
 dev_dependencies:
   flutter_test:

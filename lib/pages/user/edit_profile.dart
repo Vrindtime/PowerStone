@@ -151,7 +151,6 @@ class _EditProfileState extends State<EditProfile> {
     userData = await firestoreServices.getUserData(widget.docID);
 
     // Update the state to trigger a re-build of the widget with fetched data
-    print("DEBUG USERDATA: $userData");
     await Future.delayed(Duration(seconds: 1));
     setState(() {
       fnameController.text = userData['firstName'] ?? '';

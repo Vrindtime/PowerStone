@@ -155,7 +155,7 @@ class _ChatRoomState extends State<ChatRoom> {
           print('CUSTOM DEBUG CATCH ERROR:$e');
         }
         bool isCurrentUser = data['senderName'] ==currentUserFirebase; //68Gx0DYc0Zcw3NkfBCgIPxIHbOo1
-        print( 'CUSTOM DEBUG: $currentUserFirebase');
+        print('Current User: $currentUserFirebase');
         //align msg to right when sender is current user or vice versa
         var alignment = isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
         String message = data["message"];

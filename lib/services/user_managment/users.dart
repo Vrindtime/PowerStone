@@ -81,8 +81,6 @@ class FirestoreServices {
           isGreaterThanOrEqualTo: searchValue, isLessThan: endValue);
     }
 
-    print('DEBUG: FN:$value ; BG: $bloodGroup ; G:$gender ; J: $job');
-
     // Apply filters for blood group, gender, and job if provided
     if (bloodGroup.isNotEmpty) {
       userstream = userstream.where('bloodGroup', isEqualTo: bloodGroup);

@@ -70,8 +70,9 @@ class _ChatPageState extends State<ChatPage> {
             color: Theme.of(context).primaryColor,
             iconSize: 36,
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: ((context) => const NotificationWidget())));
+              // Navigator.of(context).push(MaterialPageRoute(
+              //     builder: ((context) => const NotificationWidget())));
+              Navigator.pushNamed(context, '/notification');
             },
           ),
         )
