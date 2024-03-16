@@ -3,10 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:powerstone/common/logout_confirmation.dart';
-import 'package:powerstone/common/notification.dart';
 import 'package:powerstone/common/profile_picture.dart';
-import 'package:powerstone/pages/chat_room.dart';
-import 'package:powerstone/pages/loginPage.dart';
+import 'package:powerstone/pages/Starter/loginPage.dart';
+import 'package:powerstone/pages/chat/chat_room.dart';
 import 'package:powerstone/services/user_managment/users.dart';
 
 class ChatPage extends StatefulWidget {
@@ -70,8 +69,6 @@ class _ChatPageState extends State<ChatPage> {
             color: Theme.of(context).primaryColor,
             iconSize: 36,
             onPressed: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: ((context) => const NotificationWidget())));
               Navigator.pushNamed(context, '/notification');
             },
           ),

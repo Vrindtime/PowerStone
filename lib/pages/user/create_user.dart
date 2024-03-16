@@ -469,7 +469,6 @@ class _CreateUserState extends State<CreateUser> {
     );
   }
 
-  // (imageUrl=='nill') ? 'https://mashuptech.in/assets/img/logo.svg' : imageUrl,
   Widget pfpImageUpload(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
       return Stack(

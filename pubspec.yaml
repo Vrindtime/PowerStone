@@ -31,6 +31,8 @@ dependencies:
   fl_chart: ^0.66.2 # to show the monthly earning gragh in homepage
   flutter_local_notifications: ^17.0.0 #to show the notification in the app itself(android)
   http: ^1.2.0
+  chewie: ^1.0.0
+  video_player: ^2.3.0
   
   
 dev_dependencies:

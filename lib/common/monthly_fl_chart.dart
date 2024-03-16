@@ -201,15 +201,7 @@ class _MonthlyFlowChartState extends State<MonthlyFlowChart> {
   }
 
   Future mainData() async {
-      spots = await getMonthEarningsAsSpots();
-      
-      Map<String, int> normalizedEarnings =
-          normalizeMonthlyEarnings(monthlyEarnings!);
-      normalizedEarnings.forEach((month, earnings) {
-        int monthIndex = months.indexOf(month) + 1;
-        double normalizedEarning = earnings.toDouble() / 500000; 
-        // spots.add(FlSpot(monthIndex.toDouble(), normalizedEarning));
-      });
+    spots = await getMonthEarningsAsSpots();
     setState(() {
       isLoading = !isLoading;
     });

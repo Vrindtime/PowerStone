@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:powerstone/pages/chat_page.dart';
-import 'package:powerstone/pages/home_page.dart';
+import 'package:powerstone/pages/Starter/home_page.dart';
+import 'package:powerstone/pages/chat/chat_page.dart';
 import 'package:powerstone/pages/payment_page.dart';
-import 'package:powerstone/pages/user_list_details.dart';
+import 'package:powerstone/pages/user/user_list_details.dart';
 import 'package:powerstone/services/notifications/push_notifications.dart';
 
 class NavigationMenu extends StatefulWidget {

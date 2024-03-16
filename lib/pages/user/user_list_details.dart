@@ -2,10 +2,9 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:powerstone/common/logout_confirmation.dart';
-import 'package:powerstone/common/notification.dart';
 import 'package:powerstone/common/view_user_list.dart';
-import 'package:powerstone/pages/loginPage.dart';
-import 'package:powerstone/pages/create_user.dart';
+import 'package:powerstone/pages/Starter/loginPage.dart';
+import 'package:powerstone/pages/user/create_user.dart';
 import 'package:powerstone/services/user_managment/users.dart';
 
 class UserListDetails extends StatefulWidget {

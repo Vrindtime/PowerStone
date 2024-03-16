@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
 import 'package:powerstone/common/logo.dart';
 import 'package:powerstone/navigation_menu.dart';
-import 'package:powerstone/pages/welcome_page.dart';
+import 'package:powerstone/pages/Starter/welcome_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
