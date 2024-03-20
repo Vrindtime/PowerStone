@@ -12,6 +12,7 @@ class WorkoutService{
     required String videoLink,
     required String instruction,
   }) async {
+    
     WorkoutModel newWorkout = WorkoutModel(
       name: name,
       muscle: muscle,

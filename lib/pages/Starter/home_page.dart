@@ -5,6 +5,7 @@ import 'package:powerstone/common/monthly_fl_chart.dart';
 import 'package:powerstone/pages/Starter/loginPage.dart';
 import 'package:powerstone/pages/comming_soon.dart';
 import 'package:powerstone/pages/function/equipments/equpiment.dart';
+import 'package:powerstone/pages/function/feedback/feedback.dart';
 import 'package:powerstone/pages/function/workout/workout.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,21 +19,21 @@ class _HomePageState extends State<HomePage> {
   List<IconData> customIcons = [
     Icons.store,
     Icons.sports_martial_arts,
+    Icons.feedback_rounded,
     Icons.person_pin_sharp,
-    Icons.storage_sharp,
     // Add more icons as needed
   ];
   List<String> customText = [
     'Equipment\nManagment',
     'Workout Library\nManagment',
-    'View User\nAttendance ',
-    'Resource\nManagment'
+    'FeedBack',
+    'View User\nAttendance'
   ];
 
   List<Widget> location = [
     EquipmentPage(),
-    WorkoutPage(),
-    const CommingSoon(),
+    const WorkoutPage(),
+    FeedbackPage(),
     const CommingSoon()
   ];
 

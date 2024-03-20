@@ -6,15 +6,22 @@ class EquipmentService {
       FirebaseFirestore.instance.collection("equipment");
 
   //Save the Equipemnt to the DB
-  Future<void> addItem(String name, String price, String brand,
+  Future<bool> addItem(String name, String price, String brand,
       String description, String img) async {
-    Equipments newEquipment = Equipments(
-        name: name,
-        price: price,
-        brand: brand,
-        description: description,
-        img: img);
-    await _equipmentCollection.add(newEquipment.toMap());
+    try {
+      Equipments newEquipment = Equipments(
+          name: name,
+          price: price,
+          brand: brand,
+          description: description,
+          img: img);
+      await _equipmentCollection.add(newEquipment.toMap());
+      return true; // Return true if the operation was successful
+    } catch (e) {
+      // Handle any exceptions here, such as Firestore errors
+      print('Error adding item: $e');
+      return false; // Return false if the operation failed
+    }
   }
 
   //get Equipemnt List

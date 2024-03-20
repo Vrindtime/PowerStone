@@ -191,7 +191,7 @@ class _AddEquipemntsState extends State<AddEquipemnts> {
                     size: 70,
                   )
                 : ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8),
                     child: Image.network(
                       imageUrl,
                       fit: BoxFit.cover,
@@ -226,20 +226,51 @@ class _AddEquipemntsState extends State<AddEquipemnts> {
         String description = descriptionController.text;
         String img = imageUrl;
 
-        await _equipmentService.addItem(name, price, brand, description, img);
+        // Validate input fields
+        if (name.isEmpty ||
+            brand.isEmpty ||
+            price.isEmpty ||
+            description.isEmpty ||
+            img.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Please fill all fields',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(
-                child: Text(
-              'Success',
-              style: Theme.of(context).textTheme.labelMedium,
-            )),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const NavigationMenu()));
+        var response = await _equipmentService.addItem(
+            name, price, brand, description, img);
+
+        if (response) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(
+                  child: Text(
+                'Success',
+                style: Theme.of(context).textTheme.labelMedium,
+              )),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.of(context).pop();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(
+                  child: Text(
+                'Operation Failed',
+                style: Theme.of(context).textTheme.labelMedium,
+              )),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       },
       child: Container(
         height: 50,

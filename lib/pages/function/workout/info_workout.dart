@@ -57,9 +57,8 @@ class _WorkoutInfoState extends State<WorkoutInfo> {
                   const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
-                    height: 200,
-                    width: double.infinity,
+                  AspectRatio(
+                    aspectRatio: 16/9,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: ChewieVideoPlayer(
@@ -68,117 +67,154 @@ class _WorkoutInfoState extends State<WorkoutInfo> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: axis,
-                    children: [
-                      Text(
-                        'Muscle:',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontSize: 20),
+                  Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: axis,
+                        children: [
+                          Text(
+                            'Muscle:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(fontSize: 20),
+                          ),
+                          Text(
+                            workoutData['WorkoutMuscle'],
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(fontSize: 20),
+                          ),
+                        ],
                       ),
-                      Text(
-                        workoutData['WorkoutMuscle'],
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontSize: 20),
-                      ),
-                    ],
+                    ),
                   ),
                   Divider(
                     color: Theme.of(context).primaryColor,
                     thickness: 1,
                     height: 16,
                   ),
-                  Row(
-                    mainAxisAlignment: axis,
-                    children: [
-                      Text(
-                        'Sets:',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontSize: 20),
+                  Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: axis,
+                        children: [
+                          Text(
+                            'Sets:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(fontSize: 20),
+                          ),
+                          Text(
+                            workoutData['WorkoutSet'],
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(fontSize: 20),
+                          ),
+                        ],
                       ),
-                      Text(
-                        workoutData['WorkoutSet'],
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontSize: 20),
-                      ),
-                    ],
+                    ),
                   ),
                   Divider(
                     color: Theme.of(context).primaryColor,
                     thickness: 1,
                     height: 16,
                   ),
-                  Row(
-                    mainAxisAlignment: axis,
-                    children: [
-                      Text(
-                        'Reps:',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontSize: 20),
+                  Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: axis,
+                        children: [
+                          Text(
+                            'Reps:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(fontSize: 20),
+                          ),
+                          Text(
+                            workoutData['WorkoutRep'],
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(fontSize: 20),
+                          ),
+                        ],
                       ),
-                      Text(
-                        workoutData['WorkoutRep'],
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontSize: 20),
-                      ),
-                    ],
+                    ),
                   ),
                   Divider(
                     color: Theme.of(context).primaryColor,
                     thickness: 1,
                     height: 16,
                   ),
-                  Row(
-                    mainAxisAlignment: axis,
-                    children: [
-                      Text(
-                        'Intensity:',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontSize: 20),
+                  Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: axis,
+                        children: [
+                          Text(
+                            'Intensity:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(fontSize: 20),
+                          ),
+                          Text(
+                            workoutData['WorkoutIntensity'],
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(fontSize: 20),
+                          ),
+                        ],
                       ),
-                      Text(
-                        workoutData['WorkoutIntensity'],
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontSize: 20),
-                      ),
-                    ],
+                    ),
                   ),
                   Divider(
                     color: Theme.of(context).primaryColor,
                     thickness: 1,
                     height: 16,
                   ),
-                  Text(
-                    'Workout Instruction:',
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(fontSize: 20),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    workoutData['WorkoutInstruction'],
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelSmall
-                        ?.copyWith(fontSize: 15),
-                    textAlign: TextAlign.justify,
+                  Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start  ,
+                          children: [
+                            Text(
+                              'Workout Instruction:',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium
+                                  ?.copyWith(fontSize: 20),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              workoutData['WorkoutInstruction'],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.copyWith(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
