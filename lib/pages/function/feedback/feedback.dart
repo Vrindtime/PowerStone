@@ -126,7 +126,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
+        
         onPressed: () {
           createNewFeedBack();
         },

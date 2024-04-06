@@ -57,7 +57,7 @@ class _contactInstructor extends StatelessWidget {
             border: Border.all(color: Theme.of(context).primaryColor)),
         child: Center(
           child: Text(
-            "Contact Instructor",
+            "Contact Admin",
             style: Theme.of(context).textTheme.labelLarge,
           ),
         ),
