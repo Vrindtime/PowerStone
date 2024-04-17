@@ -103,14 +103,63 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signInLogic(
       String email, String password, BuildContext context) async {
+    // Email validation regex pattern
+    final emailPattern = RegExp(
+      r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
+    );
+
+    // Password validation regex pattern
+    final passwordPattern = RegExp(
+      r'^(?=.*[0-9].*[0-9])(?=.*[a-zA-Z].{3,})[a-zA-Z0-9]+$',
+    );
+
+    // Check if email is valid
+    if (!emailPattern.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Invalid email format',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return; // Exit the function if email is invalid
+    }
+
+    // Check if password meets the criteria
+    if (password.length < 5 || !passwordPattern.hasMatch(password)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Password must be at least 5 characters long and contain at least 2 numbers',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return; // Exit the function if password is invalid
+    }
+
     try {
-      final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      // ignore: unnecessary_null_comparison
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
       if (credential != null) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const NavigationMenu()));
-      } else {}
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const NavigationMenu()),
+        );
+      } else {
+        // Handle if credential is null
+      }
     } on FirebaseAuthException {
       setState(() {
         isLoading = false;
@@ -118,10 +167,11 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Center(
-              child: Text(
-            'An Error Occured',
-            style: Theme.of(context).textTheme.labelMedium,
-          )),
+            child: Text(
+              'An Error Occurred',
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -184,6 +234,7 @@ class PasswordInput extends StatelessWidget {
       height: 50,
       width: double.infinity,
       child: TextField(
+        obscureText: true,
         controller: passController,
         style: Theme.of(context).textTheme.labelMedium,
         decoration: InputDecoration(

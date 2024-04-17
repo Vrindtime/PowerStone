@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powerstone/common/logout_confirmation.dart';
 import 'package:powerstone/pages/Starter/home_page.dart';
 import 'package:powerstone/pages/chat/chat_page.dart';
 import 'package:powerstone/pages/payment_page.dart';
@@ -28,33 +29,39 @@ class _NavigationMenuState extends State<NavigationMenu> {
   int currentPage = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        height: 65,
-        elevation: 0,
-        onDestinationSelected: (value) {
-          setState(() {
-            currentPage = value;
-          });
-        },
-        selectedIndex: currentPage,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        indicatorColor: Theme.of(context).primaryColor,
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.people), label: 'User'),
-          NavigationDestination(
-              icon: Icon(Icons.payment_rounded), label: 'Payment'),
-          NavigationDestination(icon: Icon(Icons.chat), label: 'Chat'),
-        ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didpop) {
+        showLogoutConfirmation(context);
+      },
+      child: Scaffold(
+        bottomNavigationBar: NavigationBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          height: 65,
+          elevation: 0,
+          onDestinationSelected: (value) {
+            setState(() {
+              currentPage = value;
+            });
+          },
+          selectedIndex: currentPage,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          indicatorColor: Theme.of(context).primaryColor,
+          destinations: const [
+            NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+            NavigationDestination(icon: Icon(Icons.people), label: 'User'),
+            NavigationDestination(
+                icon: Icon(Icons.payment_rounded), label: 'Payment'),
+            NavigationDestination(icon: Icon(Icons.chat), label: 'Chat'),
+          ],
+        ),
+        body: [
+          const HomePage(),
+          const UserListDetails(),
+          const PaymentPage(),
+          const ChatPage(),
+        ][currentPage],
       ),
-      body: [
-        const HomePage(),
-        const UserListDetails(),
-        const PaymentPage(),
-        const ChatPage(),
-      ][currentPage],
     );
   }
 }

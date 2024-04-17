@@ -212,8 +212,8 @@ class _PaymentPageState extends State<PaymentPage> {
                                           if (paymentSnapshot.exists) {
                                             final data = paymentSnapshot.data()
                                                 as Map<String, dynamic>;
-                                            payStatus = data['status'];
-                                            payStatus ??= false;
+                                            payStatus = data['status']??false;
+                                            debugPrint('DEBUG paystatus: $payStatus');
                                           }
 
                                           switch (selectedFilter) {

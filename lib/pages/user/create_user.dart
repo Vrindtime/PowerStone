@@ -123,17 +123,40 @@ class _CreateUserState extends State<CreateUser> {
 
   String? selectjob;
   List<String> jobs = [
-    "software engineer",
-    "web developer",
-    "data scientist",
-    "ux/ui designer",
-    "network engineer",
-    "cloud architect",
-    "none"
+    "Healthcare Professional",
+    "IT",
+    "Engineer",
+    "Teacher/Educator",
+    "Sales Representative",
+    "Administrative Assistant",
+    "Customer Service Representative",
+    "Accountant/Financial Analyst",
+    "Marketing Specialist",
+    "Construction Worker",
+    "Human Resources Manager",
+    "Retail Sales Associate",
+    "Graphic Designer",
+    "Operations Manager",
+    "Project Manager",
+    "Legal Assistant/Paralegal",
+    "Social Worker",
+    "Research Analyst",
+    "Chef/Cook",
+    "Transportation Worker",
+    "Writer/Editor",
+    "House Wife",
+    "None"
   ];
 
   String? selectgender;
-  List<String> genders = ["male", "female", "other","none"];
+  List<String> genders = ["male", "female", "other", "none"];
+
+  // Validation function for password
+  bool _isPasswordValid(String value) {
+    return value.length >= 5 &&
+        RegExp(r'^(?=.*[0-9].*[0-9])(?=.*[a-zA-Z].{3,})[a-zA-Z0-9]+$')
+            .hasMatch(value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -234,6 +257,7 @@ class _CreateUserState extends State<CreateUser> {
                 ),
                 //weight
                 LongInput(controller: passwordController, label: "Password"),
+
                 SizedBox(
                   height: 20,
                 ),
@@ -259,13 +283,40 @@ class _CreateUserState extends State<CreateUser> {
   GestureDetector createUserbtn(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        // Check if all form fields are filled
+      if (fnameController.text.isEmpty ||
+          lnameController.text.isEmpty ||
+          dobController.text.isEmpty ||
+          selectgender == null ||
+          selectjob == null ||
+          selectedBloodGroup == null ||
+          heightController.text.isEmpty ||
+          weightController.text.isEmpty ||
+          phoneController.text.isEmpty ||
+          passwordController.text.isEmpty ||
+          noteController.text.isEmpty ||
+          imageUrl.isEmpty) {
+        // If any field is empty, show an error message or handle it accordingly
+        // For example, you can display a SnackBar to inform the user to fill out all fields
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Please fill out all fields',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // Exit the function without proceeding further
+      }
+      
         const Duration(seconds: 1);
         final String firstName = fnameController.text;
         final String lastName = lnameController.text;
         final String dateOfBirth = dobController.text;
-        final String gender = selectgender??'nil';
+        final String gender = selectgender ?? 'nil';
         final String job = selectjob ?? 'nil';
-        final String bloodGroup = selectedBloodGroup??'nil';
+        final String bloodGroup = selectedBloodGroup ?? 'nil';
         final String height = heightController.text;
         final String weight = weightController.text;
         final String email = phoneController.text;
@@ -475,7 +526,7 @@ class _CreateUserState extends State<CreateUser> {
         children: [
           CircleAvatar(
             maxRadius: 40,
-            child: (imageUrl=='' && imageUrl.isEmpty)
+            child: (imageUrl == '' && imageUrl.isEmpty)
                 ? Icon(
                     Icons.person,
                     size: 70,
@@ -536,7 +587,7 @@ class InputText extends StatelessWidget {
     return SizedBox(
       height: 50,
       width: MediaQuery.of(context).size.width * 0.45,
-      child: TextField(
+      child: TextFormField(
         keyboardType: (label == 'Height' || label == 'Weight')
             ? TextInputType.number
             : TextInputType.name,
@@ -557,6 +608,11 @@ class InputText extends StatelessWidget {
             ),
           ),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter your phone number';
+          }
+        },
       ),
     );
   }
@@ -577,7 +633,8 @@ class LongInput extends StatelessWidget {
     return SizedBox(
       height: 50,
       width: double.infinity,
-      child: TextField(
+      child: TextFormField(
+        obscureText: (label == "Phone") ? false : true,
         keyboardType:
             (label == "Phone") ? TextInputType.phone : TextInputType.name,
         controller: controller,
@@ -597,6 +654,16 @@ class LongInput extends StatelessWidget {
             ),
           ),
         ),
+        validator: (value) {
+          if (label != "Phone") {
+            if (value!.length >= 5 &&
+                RegExp(r'^(?=.*[0-9].*[0-9])(?=.*[a-zA-Z].{3,})[a-zA-Z0-9]+$')
+                    .hasMatch(value)) {
+              return 'Password must be at least 5 characters long and contain at least 2 numbers';
+            }
+          }
+          return null;
+        },
       ),
     );
   }
@@ -617,7 +684,7 @@ class NoteInput extends StatelessWidget {
     return SizedBox(
       height: 70,
       width: double.infinity,
-      child: TextField(
+      child: TextFormField(
         maxLines: 5,
         keyboardType: TextInputType.name,
         controller: controller,
@@ -631,11 +698,17 @@ class NoteInput extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(6.0),
             borderSide: BorderSide(
-              color:Theme.of(context).primaryColor, // Border color when focused
+              color:
+                  Theme.of(context).primaryColor, // Border color when focused
               width: 0.5,
             ),
           ),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter a password';
+          }
+        },
       ),
     );
   }

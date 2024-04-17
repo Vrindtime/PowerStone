@@ -45,7 +45,6 @@ class _NotificationPageState extends State<NotificationPage> {
       await fcmNotificationServices.getDeviceToken().then((value) async {
         var data = {
           'to': '/topics/all', // Send to all devices subscribed to "all" topic
-          // 'to':value.toString(),
           'priority': 'high',
           'notification': {
             'title': 'Notification',

@@ -27,13 +27,29 @@ class _UserListDetailsState extends State<UserListDetails> {
 
   String? selectjob;
   List<String> jobs = [
-    "software engineer",
-    "web developer",
-    "data scientist",
-    "ux/ui designer",
-    "network engineer",
-    "cloud architect",
-    "none"
+    "Healthcare Professional",
+    "IT",
+    "Engineer",
+    "Teacher/Educator",
+    "Sales Representative",
+    "Administrative Assistant",
+    "Customer Service Representative",
+    "Accountant/Financial Analyst",
+    "Marketing Specialist",
+    "Construction Worker",
+    "Human Resources Manager",
+    "Retail Sales Associate",
+    "Graphic Designer",
+    "Operations Manager",
+    "Project Manager",
+    "Legal Assistant/Paralegal",
+    "Social Worker",
+    "Research Analyst",
+    "Chef/Cook",
+    "Transportation Worker",
+    "Writer/Editor",
+    "House Wife",
+    "None"
   ];
 
   String? selectedBloodGroup;

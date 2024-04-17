@@ -67,8 +67,7 @@ class PaymentService {
     }
   }
 
-  Future<void> updatePaymentStatus(
-      String uid, int month, int year, bool status) async {
+  Future<void> updatePaymentStatus(String uid, int month, int year, bool status) async {
     // print('DEBUG: $status');
     // print('DEBUG:  Got into updatePaymentStatus: UID: $uid');
     try {

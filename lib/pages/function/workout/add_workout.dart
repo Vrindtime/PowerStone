@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,10 +25,21 @@ class _AddWorkoutState extends State<AddWorkout> {
   String videoUrl = '';
   bool isVideoSelected = false;
   String label = '';
+  String? selectedMuscle;
   String getExtension(XFile file) {
     final path = file.path;
     return path.substring(path.lastIndexOf('.') + 1);
   }
+
+  final List<String> muscleOptions = [
+    'chest',
+    'lat',
+    'delt',
+    'bicep',
+    'tricep',
+    'leg',
+    'cardio',
+  ];
 
   Future<void> selectVideo() async {
     //imagepicker enable to open galerry
@@ -51,11 +62,12 @@ class _AddWorkoutState extends State<AddWorkout> {
       } catch (e) {
         if (videoUrl.isEmpty) {
           isVideoSelected = false;
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
                 'Error uploading video to DB Storage',
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.labelMedium,
               ),
               backgroundColor: Colors.red,
             ),
@@ -67,18 +79,32 @@ class _AddWorkoutState extends State<AddWorkout> {
 
   Future<void> uploadWorkout() async {
     final WorkoutService _workoutService = WorkoutService();
+
     if (_formKey.currentState!.validate() && isVideoSelected) {
       String name = nameController.text;
-      String muscle = muscleController.text;
       String sets = setsController.text;
       String reps = repsController.text;
       String intensity = intensityController.text;
       String instruction = instructionController.text;
 
+      // Check if sets and reps are numbers
+      if (!_isNumeric(sets) || !_isNumeric(reps)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Sets and reps must be numbers',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
       // Upload workout details to Firestore
       await _workoutService.addWorkout(
         name: name,
-        muscle: muscle,
+        muscle: selectedMuscle!,
         sets: sets,
         reps: reps,
         intensity: intensity,
@@ -90,7 +116,7 @@ class _AddWorkoutState extends State<AddWorkout> {
         SnackBar(
           content: Text(
             'Workout uploaded successfully',
-            style: Theme.of(context).textTheme.bodyText1,
+            style: Theme.of(context).textTheme.labelMedium,
           ),
           backgroundColor: Colors.green,
         ),
@@ -103,11 +129,34 @@ class _AddWorkoutState extends State<AddWorkout> {
       repsController.clear();
       intensityController.clear();
       instructionController.clear();
+
       setState(() {
         videoUrl = '';
         isVideoSelected = false;
+        selectedMuscle = null;
       });
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const NavigationMenu()));
+    } else {
+      // Show snackbar if form is not valid
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Please fill all fields correctly',
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
+  }
+
+// Helper function to check if a string is numeric
+  bool _isNumeric(String str) {
+    if (str == null) {
+      return false;
+    }
+    return double.tryParse(str) != null;
   }
 
   @override
@@ -129,12 +178,17 @@ class _AddWorkoutState extends State<AddWorkout> {
               TextInputWidget(
                   label: 'Workout Name', controller: nameController),
               const SizedBox(height: 10.0),
-              TextInputWidget(
-                  label: 'Target Muscle', controller: muscleController),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.92,
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  child: _muscleDropdown(context)),
               const SizedBox(height: 10.0),
               TextInputWidget(label: 'Sets', controller: setsController),
               const SizedBox(height: 10.0),
-              TextInputWidget(label: 'Reps', controller: repsController),
+              TextInputWidget(
+                label: 'Reps',
+                controller: repsController,
+              ),
               const SizedBox(height: 10.0),
               TextInputWidget(
                   label: 'Intensity', controller: intensityController),
@@ -187,8 +241,6 @@ class _AddWorkoutState extends State<AddWorkout> {
     return GestureDetector(
       onTap: () async {
         await uploadWorkout();
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const NavigationMenu()));
       },
       child: Container(
         height: 50,
@@ -201,6 +253,52 @@ class _AddWorkoutState extends State<AddWorkout> {
           child: Text(
             "Add Workout",
             style: Theme.of(context).textTheme.labelLarge,
+          ),
+        ),
+      ),
+    );
+  }
+
+  DropdownButtonHideUnderline _muscleDropdown(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<String>(
+        // Specify type parameter <String> for DropdownButton2
+        hint: Text("Select Target Muscle",
+            style: Theme.of(context).textTheme.labelSmall),
+        value: selectedMuscle,
+        buttonStyleData: ButtonStyleData(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.white, width: 0.2),
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+          elevation: 0,
+        ),
+        onChanged: (String? value) {
+          // Change type of value to String
+          setState(() {
+            selectedMuscle = value;
+          });
+        },
+        items: muscleOptions
+            .map((String item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    item,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                ))
+            .toList(),
+        dropdownStyleData: DropdownStyleData(
+          maxHeight: MediaQuery.of(context).size.height * .8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          offset: const Offset(-20, 0),
+          scrollbarTheme: ScrollbarThemeData(
+            radius: const Radius.circular(40),
+            thickness: MaterialStateProperty.all(3),
+            thumbVisibility: MaterialStateProperty.all(true),
           ),
         ),
       ),

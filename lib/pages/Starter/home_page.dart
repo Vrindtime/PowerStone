@@ -40,39 +40,39 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(context),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Monthly Revenue",
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(fontSize: 20),
-              ),
+    appBar: customAppBar(context),
+    body: Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Monthly Revenue",
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(fontSize: 20),
             ),
-            const MonthlyFlowChart(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Functions",
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(fontSize: 20),
-              ),
+          ),
+          const MonthlyFlowChart(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Functions",
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(fontSize: 20),
             ),
-            //create the grid
-            homeFunctions(),
-          ],
-        ),
+          ),
+          //create the grid
+          homeFunctions(),
+        ],
       ),
-    );
+    ),
+        );
   }
 
   Widget homeFunctions() {
