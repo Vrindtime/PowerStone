@@ -1,8 +1,8 @@
 // ignore_for_file: camel_case_types
 
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/logo.dart';
-import 'package:powerstone/pages/Starter/loginPage.dart';
+import 'package:powerstone_admin/common/logo.dart';
+import 'package:powerstone_admin/pages/Starter/loginPage.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});

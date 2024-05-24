@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/search.dart';
-import 'package:powerstone/pages/function/workout/add_workout.dart';
-import 'package:powerstone/pages/function/workout/info_workout.dart';
-import 'package:powerstone/services/function/workout_service.dart';
+import 'package:powerstone_admin/common/search.dart';
+import 'package:powerstone_admin/pages/function/workout/add_workout.dart';
+import 'package:powerstone_admin/pages/function/workout/info_workout.dart';
+import 'package:powerstone_admin/services/function/workout_service.dart';
 
 class WorkoutPage extends StatefulWidget {
   const WorkoutPage({super.key});

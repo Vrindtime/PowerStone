@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:powerstone/services/payment/payment.dart';
+import 'package:powerstone_admin/services/payment/payment.dart';
 
 class FirestoreServices {
   final CollectionReference _userCollection =

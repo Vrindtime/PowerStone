@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:popover/popover.dart';
-import 'package:powerstone/pages/user/edit_profile.dart';
-import 'package:powerstone/services/user_managment/users.dart';
+import 'package:powerstone_admin/pages/user/edit_profile.dart';
+import 'package:powerstone_admin/services/user_managment/users.dart';
 
 class DotMenu extends StatelessWidget {
   final String docID;

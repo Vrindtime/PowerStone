@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:powerstone/navigation_menu.dart';
-import 'package:powerstone/services/function/equipment_service.dart';
+import 'package:powerstone_admin/services/function/equipment_service.dart';
 
 class AddEquipemnts extends StatefulWidget {
   const AddEquipemnts({super.key});

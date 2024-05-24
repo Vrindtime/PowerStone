@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:powerstone/models/equipment_model.dart';
+import 'package:powerstone_admin/models/equipment_model.dart';
 
 class EquipmentService {
   final CollectionReference _equipmentCollection =

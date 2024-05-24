@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:powerstone/common/logout_confirmation.dart';
-import 'package:powerstone/common/profile_picture.dart';
-import 'package:powerstone/pages/Starter/loginPage.dart';
-import 'package:powerstone/pages/chat/chat_room.dart';
-import 'package:powerstone/services/user_managment/users.dart';
+import 'package:powerstone_admin/common/logout_confirmation.dart';
+import 'package:powerstone_admin/common/profile_picture.dart';
+import 'package:powerstone_admin/pages/Starter/loginPage.dart';
+import 'package:powerstone_admin/pages/chat/chat_room.dart';
+import 'package:powerstone_admin/services/user_managment/users.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});

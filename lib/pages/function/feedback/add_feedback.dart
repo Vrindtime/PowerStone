@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/search.dart';
-import 'package:powerstone/services/function/feedback_service.dart'; // Assuming this is where your FeedBackService class is defined
+import 'package:powerstone_admin/services/function/feedback_service.dart'; // Assuming this is where your FeedBackService class is defined
 
 class AddFeedbackPage extends StatefulWidget {
   AddFeedbackPage({super.key});

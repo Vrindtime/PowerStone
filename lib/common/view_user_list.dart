@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/dot_menu.dart';
-import 'package:powerstone/common/profile_picture.dart';
-import 'package:powerstone/services/user_managment/users.dart';
+import 'package:powerstone_admin/common/dot_menu.dart';
+import 'package:powerstone_admin/common/profile_picture.dart';
+import 'package:powerstone_admin/services/user_managment/users.dart';
 
 class ViewUserList extends StatelessWidget {
   const ViewUserList({

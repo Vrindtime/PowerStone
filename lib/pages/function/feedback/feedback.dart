@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/search.dart';
-import 'package:powerstone/pages/function/feedback/add_feedback.dart';
-import 'package:powerstone/services/function/feedback_service.dart';
+import 'package:powerstone_admin/common/search.dart';
+import 'package:powerstone_admin/pages/function/feedback/add_feedback.dart';
+import 'package:powerstone_admin/services/function/feedback_service.dart';
 
 class FeedbackPage extends StatefulWidget {
   @override

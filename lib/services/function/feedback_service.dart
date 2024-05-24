@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:powerstone/models/feedback_model.dart';
+import 'package:powerstone_admin/models/feedback_model.dart';
 
 class FeedBackService {
   final CollectionReference _feedbackCollection =

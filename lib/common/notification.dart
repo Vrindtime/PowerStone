@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:powerstone/services/keys/api_config.dart';
-import 'package:powerstone/services/notifications/curd_notifications.dart';
-import 'package:powerstone/services/notifications/push_notifications.dart';
+import 'package:powerstone_admin/services/keys/api_config.dart';
+import 'package:powerstone_admin/services/notifications/curd_notifications.dart';
+import 'package:powerstone_admin/services/notifications/push_notifications.dart';
 import 'package:http/http.dart' as http;
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});

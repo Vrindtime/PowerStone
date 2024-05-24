@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/logout_confirmation.dart';
-import 'package:powerstone/common/monthly_fl_chart.dart';
-import 'package:powerstone/pages/Starter/loginPage.dart';
-import 'package:powerstone/pages/comming_soon.dart';
-import 'package:powerstone/pages/function/equipments/equpiment.dart';
-import 'package:powerstone/pages/function/feedback/feedback.dart';
-import 'package:powerstone/pages/function/workout/workout.dart';
+import 'package:powerstone_admin/common/logout_confirmation.dart';
+import 'package:powerstone_admin/common/monthly_fl_chart.dart';
+import 'package:powerstone_admin/pages/Starter/loginPage.dart';
+import 'package:powerstone_admin/pages/comming_soon.dart';
+import 'package:powerstone_admin/pages/function/equipments/equpiment.dart';
+import 'package:powerstone_admin/pages/function/feedback/feedback.dart';
+import 'package:powerstone_admin/pages/function/workout/workout.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

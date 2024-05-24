@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:powerstone/models/workout_model.dart';
+import 'package:powerstone_admin/models/workout_model.dart';
 
 class WorkoutService{
   final CollectionReference _workoutCollection = FirebaseFirestore.instance.collection("workout");

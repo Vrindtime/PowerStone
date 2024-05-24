@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/chat_bubble.dart';
-import 'package:powerstone/services/chat/chat_services.dart';
+import 'package:powerstone_admin/common/chat_bubble.dart';
+import 'package:powerstone_admin/services/chat/chat_services.dart';
 import 'package:intl/intl.dart';
 
 class ChatRoom extends StatefulWidget {

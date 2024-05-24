@@ -5,9 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
-import 'package:powerstone/common/logo.dart';
-import 'package:powerstone/navigation_menu.dart';
-import 'package:powerstone/pages/Starter/welcome_page.dart';
+import 'package:powerstone_admin/common/logo.dart';
+import 'package:powerstone_admin/navigation_menu.dart';
+import 'package:powerstone_admin/pages/Starter/welcome_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signInLogic(
       String email, String password, BuildContext context) async {
-        debugPrint('DEBUG: email: $email , password: $password');
+    debugPrint('DEBUG: email: $email , password: $password');
     // Email validation regex pattern
     final emailPattern = RegExp(
       r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
@@ -167,8 +167,19 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           isLoading = false;
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(
+              child: Text(
+                'No Account Found',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-    } on Exception {
+    } on FirebaseAuthException catch (e) {
       setState(() {
         isLoading = false;
       });
@@ -176,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
         SnackBar(
           content: Center(
             child: Text(
-              'An Error Occurred',
+              e.message ?? 'An Error Occurred', // Show the error message
               style: Theme.of(context).textTheme.labelMedium,
             ),
           ),

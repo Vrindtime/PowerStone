@@ -1,13 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:powerstone/common/notification.dart';
-import 'package:powerstone/pages/Starter/home_page.dart';
-import 'package:powerstone/pages/chat/chat_page.dart';
-import 'package:powerstone/pages/payment_page.dart';
-import 'package:powerstone/pages/user/user_list_details.dart';
-import 'package:powerstone/services/auth/auth_gate.dart';
-import 'package:powerstone/services/theme.dart';
+import 'package:powerstone_admin/common/notification.dart';
+import 'package:powerstone_admin/pages/Starter/home_page.dart';
+import 'package:powerstone_admin/pages/chat/chat_page.dart';
+import 'package:powerstone_admin/pages/payment_page.dart';
+import 'package:powerstone_admin/pages/user/user_list_details.dart';
+import 'package:powerstone_admin/services/auth/auth_gate.dart';
+import 'package:powerstone_admin/services/theme.dart';
 import 'services/firebase_options.dart';
 
 //function to listen to background changes

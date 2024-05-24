@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/navigation_menu.dart';
-import 'package:powerstone/pages/Starter/welcome_page.dart';
+import 'package:powerstone_admin/navigation_menu.dart';
+import 'package:powerstone_admin/pages/Starter/welcome_page.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});

@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/services/payment/payment.dart';
+import 'package:powerstone_admin/services/payment/payment.dart';
 
 class MonthlyFlowChart extends StatefulWidget {
   const MonthlyFlowChart({super.key});

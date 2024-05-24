@@ -3,9 +3,9 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:powerstone/common/video_player.dart';
-import 'package:powerstone/navigation_menu.dart';
-import 'package:powerstone/services/function/workout_service.dart';
+import 'package:powerstone_admin/common/video_player.dart';
+import 'package:powerstone_admin/navigation_menu.dart';
+import 'package:powerstone_admin/services/function/workout_service.dart';
 
 class AddWorkout extends StatefulWidget {
   const AddWorkout({Key? key});

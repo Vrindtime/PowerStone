@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCfKnKzm6ULzc7MOTuT5nni564Uvb0IecU',
-    appId: '1:395123801284:android:39c34ec239e624e0fd1d91',
+    appId: '1:395123801284:android:b3c4468d6cca37fbfd1d91',
     messagingSenderId: '395123801284',
     projectId: 'powerstone-gym',
     storageBucket: 'powerstone-gym.appspot.com',

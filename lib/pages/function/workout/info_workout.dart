@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/video_player.dart';
+import 'package:powerstone_admin/common/video_player.dart';
 
 class WorkoutInfo extends StatefulWidget {
   final String docid;

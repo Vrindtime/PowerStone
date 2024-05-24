@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:powerstone/common/search.dart';
-import 'package:powerstone/pages/function/equipments/add_equipement.dart';
-import 'package:powerstone/services/function/equipment_service.dart';
+import 'package:powerstone_admin/common/search.dart';
+import 'package:powerstone_admin/pages/function/equipments/add_equipement.dart';
+import 'package:powerstone_admin/services/function/equipment_service.dart';
 
 class EquipmentPage extends StatefulWidget {
   EquipmentPage({super.key});

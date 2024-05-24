@@ -1,5 +1,5 @@
-name: powerstone
-description: "A Gym Managment App to streamline the admin process"
+name: powerstone_admin
+description: "A Gym Managment App to streamline the admin operation of a gym"
 publish_to: 'none'
 version: 0.0.8
 
@@ -57,18 +57,18 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/images/gym_logo.png"
-  adaptive_icon_foreground: "assets/images/gym_logo.png"
+  adaptive_icon_foreground: "assets/images/app_logo.png"
   adaptive_icon_background: "#000000"
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
-    image_path: "assets/images/gym_logo_1.png"
+    image_path: "assets/images/app_logo.png"
     background_color: "#hexcode"
     theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: "assets/images/gym_logo_1.png"
+    image_path: "assets/images/app_logo.png"
     icon_size: 48 # min:48, max:256, default: 48
   macos:
     generate: true
-    image_path: "assets/images/gym_logo_1.png"
+    image_path: "assets/images/app_logo.png"
