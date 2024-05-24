@@ -103,6 +103,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signInLogic(
       String email, String password, BuildContext context) async {
+        debugPrint('DEBUG: email: $email , password: $password');
     // Email validation regex pattern
     final emailPattern = RegExp(
       r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
@@ -110,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // Password validation regex pattern
     final passwordPattern = RegExp(
-      r'^(?=.*[0-9].*[0-9])(?=.*[a-zA-Z].{3,})[a-zA-Z0-9]+$',
+      r'^(?=.*\d).{6,}$',
     );
 
     // Check if email is valid
@@ -152,15 +153,22 @@ class _LoginPageState extends State<LoginPage> {
         email: email,
         password: password,
       );
-
+      debugPrint('DEBUG: credential : $credential');
+      // ignore: unnecessary_null_comparison
       if (credential != null) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const NavigationMenu()),
         );
+        setState(() {
+          isLoading = false;
+        });
       } else {
         // Handle if credential is null
+        setState(() {
+          isLoading = false;
+        });
       }
-    } on FirebaseAuthException {
+    } on Exception {
       setState(() {
         isLoading = false;
       });
@@ -238,7 +246,7 @@ class PasswordInput extends StatelessWidget {
         controller: passController,
         style: Theme.of(context).textTheme.labelMedium,
         decoration: InputDecoration(
-          label: const Text("Passowrd"),
+          label: const Text("Password"),
           labelStyle: Theme.of(context).textTheme.labelSmall,
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(18.0),
